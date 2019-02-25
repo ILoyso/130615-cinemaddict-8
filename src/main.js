@@ -23,23 +23,27 @@ const filters = [
   },
   {
     name: `Favorites`
+  },
+  {
+    name: `Stats`,
+    isAdditional: true
   }
 ];
 
 const createFiltersTemplate = (filtersData) => {
   let filtersTemplate = ``;
   for (const filter of filtersData) {
-    filtersTemplate += getFilterTemplate(filter.name, generateRandomNumber(15, 1), filter.isActive);
+    filtersTemplate += getFilterTemplate(filter.name, generateRandomNumber(15, 1), filter.isActive, filter.isAdditional);
   }
   return filtersTemplate;
 };
 
 const createFilmsTemplate = (amount, hasControls) => {
-  let tasksTemplate = ``;
+  let filmsTemplate = ``;
   for (let i = 0; i < amount; i++) {
-    tasksTemplate += getFilmTemplate(hasControls);
+    filmsTemplate += getFilmTemplate(hasControls);
   }
-  return tasksTemplate;
+  return filmsTemplate;
 };
 
 const renderTopFilms = (amount) => {
