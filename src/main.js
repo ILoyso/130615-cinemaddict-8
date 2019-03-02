@@ -1,8 +1,7 @@
 import {generateRandomNumber, renderTemplate} from './utils';
 import makeFilter from './make-filter';
 import filters from './get-filters';
-import getFilm from './get-film';
-import makeFilm from './make-film';
+import generateFilms from './generate-films';
 
 const MAX_NUMBER_OF_FILMS = 7;
 const NUMBER_OF_TOP_FILMS = 2;
@@ -20,18 +19,10 @@ const createFiltersTemplate = (filtersData) => {
   return filtersTemplate;
 };
 
-const createFilmsTemplate = (amount, hasControls) => {
-  let filmsTemplate = [];
-  for (let i = 0; i < amount; i++) {
-    filmsTemplate.push(makeFilm(getFilm(), hasControls));
-  }
-  return filmsTemplate;
-};
-
 const renderTopFilms = (amount) => {
   filmsTopContainers.forEach((container) => {
     container.innerHTML = ``;
-    renderTemplate(container, createFilmsTemplate(amount, false).join(``));
+    renderTemplate(container, generateFilms(amount, false).join(``));
   });
 };
 
@@ -39,7 +30,7 @@ const onFilterClick = (evt) => {
   const clickedTag = evt.target;
   if ((clickedTag.tagName.toLowerCase() === `a`) && (!clickedTag.classList.contains(FILTER_ACTIVE_CLASS))) {
     filmsContainer.innerHTML = ``;
-    renderTemplate(filmsContainer, createFilmsTemplate(generateRandomNumber(15, 1)).join(``));
+    renderTemplate(filmsContainer, generateFilms(generateRandomNumber(15, 1)).join(``));
     renderTopFilms(generateRandomNumber(5, 1));
   }
 };
@@ -47,5 +38,5 @@ const onFilterClick = (evt) => {
 filtersContainer.addEventListener(`click`, onFilterClick);
 
 renderTemplate(filtersContainer, createFiltersTemplate(filters));
-renderTemplate(filmsContainer, createFilmsTemplate(MAX_NUMBER_OF_FILMS));
+renderTemplate(filmsContainer, generateFilms(MAX_NUMBER_OF_FILMS));
 renderTopFilms(NUMBER_OF_TOP_FILMS);
