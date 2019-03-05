@@ -38,5 +38,5 @@ const onFilterClick = (evt) => {
 filtersContainer.addEventListener(`click`, onFilterClick);
 
 renderTemplate(filtersContainer, createFiltersTemplate(filters));
-renderTemplate(filmsContainer, generateFilms(MAX_NUMBER_OF_FILMS));
+renderTemplate(filmsContainer, generateFilms(MAX_NUMBER_OF_FILMS).join(``));
 renderTopFilms(NUMBER_OF_TOP_FILMS);
