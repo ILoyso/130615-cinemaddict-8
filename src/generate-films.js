@@ -1,10 +1,14 @@
-import makeFilm from "./make-film";
 import getFilm from "./get-film";
 
-export default (amount, hasControls) => {
+/**
+ * Function for generate array with all films data
+ * @param {Number} amount
+ * @return {Object[]}
+ */
+export default (amount) => {
   let filmsTemplate = [];
   for (let i = 0; i < amount; i++) {
-    filmsTemplate.push(makeFilm(getFilm(), hasControls));
+    filmsTemplate.push(getFilm());
   }
   return filmsTemplate;
 };
