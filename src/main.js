@@ -3,11 +3,13 @@ import makeFilter from './make-filter';
 import filters from './get-filters';
 import generateFilms from './generate-films';
 import Film from './film';
+import FilmPopup from './film-popup';
 
 const MAX_NUMBER_OF_FILMS = 7;
 const NUMBER_OF_TOP_FILMS = 2;
 const FILTER_ACTIVE_CLASS = `main-navigation__item--active`;
 
+const body = document.querySelector(`body`);
 const filtersContainer = document.querySelector(`.main-navigation`);
 const filmsContainer = document.querySelector(`.films-list .films-list__container`);
 const filmsTopContainers = document.querySelectorAll(`.films-list--extra .films-list__container`);
@@ -45,6 +47,17 @@ const renderFilms = (dist, films) => {
 
   films.forEach((film) => {
     const filmComponent = new Film(film);
+    const filmPopupComponent = new FilmPopup(film);
+
+    filmComponent.onCommentsClick = () => {
+      filmPopupComponent.render();
+      body.appendChild(filmPopupComponent.element);
+    };
+
+    filmPopupComponent.onClose = () => {
+      body.removeChild(filmPopupComponent.element);
+      filmPopupComponent.unrender();
+    };
 
     fragment.appendChild(filmComponent.render());
   });

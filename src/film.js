@@ -6,33 +6,22 @@ export default class Film {
   /**
    * Create c film
    * @param {Object} data
-   * @param {Boolean} hasControls
    */
-  constructor(data, hasControls = true) {
+  constructor(data) {
     this._title = data.title;
-    this._originalTitle = data.originalTitle;
     this._poster = data.poster;
     this._year = data.year;
-    this._actors = data.actors;
     this._description = data.description;
     this._duration = data.duration;
-    this._type = data.type;
-    this._season = data.season;
-    this._episodes = data.episodes;
-    this._genre = data.genre;
-    this._restrictions = data.restrictions;
-    this._premiere = data.premiere;
-    this._dvd = data.dvd;
-    this._userRating = data.userRating;
+    this._genres = data.genres;
     this._rating = data.rating;
-    this._country = data.country;
     this._isFavorite = data.isFavorite;
     this._isViewed = data.isViewed;
     this._isGoingToWatch = data.isGoingToWatch;
-
-    this._hasControls = hasControls;
+    this._hasControls = true;
 
     this._element = null;
+    this._onComments = null;
   }
 
   /**
@@ -49,6 +38,24 @@ export default class Film {
   }
 
   /**
+   * Method for check for function and if yes to white it in this._onComments
+   * @private
+   */
+  _onCommentsClick() {
+    if (typeof this._onComments === `function`) {
+      this._onComments();
+    }
+  }
+
+  /**
+   * Setter for function that will be work on Comments click
+   * @param {Function} fn
+   */
+  set onCommentsClick(fn) {
+    this._onComments = fn;
+  }
+
+  /**
    * Getter for film template
    * @return {string}
    */
@@ -59,7 +66,7 @@ export default class Film {
           <p class="film-card__info">
             <span class="film-card__year">${this._year}</span>
             <span class="film-card__duration">${Math.round(this._duration / Time.HOUR)}h&nbsp;${this._duration % Time.HOUR}m</span>
-            <span class="film-card__genre">${this._genre}</span>
+            <span class="film-card__genre">${this._genres.join(`, `)}</span>
           </p>
           <img src="./images/posters/${this._poster}.jpg" alt="" class="film-card__poster">
           <p class="film-card__description">${this._description}</p>
@@ -68,17 +75,29 @@ export default class Film {
         </article>`;
   }
 
+  /** Method for bing function to comments */
+  bind() {
+    this._element.querySelector(`.film-card__comments`).addEventListener(`click`, this._onCommentsClick.bind(this));
+  }
+
   /**
    * Method for render film and add events
    * @return {Node}
    */
   render() {
     this._element = createElement(this.template);
+    this.bind();
     return this._element;
+  }
+
+  /** Method for unbing function from comments */
+  unbind() {
+    this._element.querySelector(`.film-card__comments`).removeEventListener(`submit`, this._onCommentsClick.bind(this));
   }
 
   /** Method for unrender film */
   unrender() {
+    this.unbind();
     this._element = null;
   }
 

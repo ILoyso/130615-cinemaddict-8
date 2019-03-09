@@ -1,3 +1,29 @@
+export const MAX_FILM_RATING = 10;
+
+export const Time = {
+  YEAR: 365,
+  DAY: 24,
+  HOUR: 60,
+  MINUTE: 60,
+  SECOND: 1000
+};
+
+export const months = [
+  `January`,
+  `February`,
+  `March`,
+  `April`,
+  `May`,
+  `June`,
+  `July`,
+  `August`,
+  `September`,
+  `October`,
+  `November`,
+  `December`
+];
+
+
 /**
  * Function for denerate random number, not including max
  * @param {Number} max
@@ -29,10 +55,11 @@ export const getRandomValue = (values) => values[generateRandomNumber(values.len
  * @return {Array}
  */
 export const getRandomArrayElements = (array, amount) => {
+  let arrayCopy = Array.from(array);
   let newArray = [];
 
   while (amount > 0) {
-    newArray.push(array[generateRandomNumber(array.length)]);
+    newArray.push(arrayCopy.splice([generateRandomNumber(arrayCopy.length)], 1).join(``));
     amount--;
   }
   return newArray;
@@ -45,16 +72,7 @@ export const getRandomArrayElements = (array, amount) => {
  * @param {String} template
  */
 export const renderTemplate = (parent, template) => {
-  parent.insertAdjacentHTML(`afterbegin`, template);
-};
-
-
-export const Time = {
-  YEAR: 365,
-  DAY: 24,
-  HOUR: 60,
-  MINUTE: 60,
-  SECOND: 1000
+  parent.insertAdjacentHTML(`beforeend`, template);
 };
 
 
