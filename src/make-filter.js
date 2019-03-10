@@ -1,4 +1,12 @@
-const getFilterTemplate = (text, amount, isActive = false, isAdditional = false) => {
+/**
+ * Function for make filter template
+ * @param {String} text
+ * @param {Number} amount
+ * @param {Boolean} isActive
+ * @param {Boolean} isAdditional
+ * @return {string}
+ */
+export default (text, amount, isActive = false, isAdditional = false) => {
   const filterId = text.toLowerCase().split(` `)[0];
   const amountTemplate = `<span class="main-navigation__item-count">${amount}</span>`;
 
@@ -8,4 +16,3 @@ const getFilterTemplate = (text, amount, isActive = false, isAdditional = false)
           </a>`;
 };
 
-export default getFilterTemplate;

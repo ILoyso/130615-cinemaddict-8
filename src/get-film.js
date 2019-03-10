@@ -3,7 +3,8 @@ import {
   generateRandomNumber,
   getRandomArrayElements,
   generateRandomBoolean,
-  Time
+  Time,
+  MAX_FILM_RATING
 } from './utils';
 
 const titles = [
@@ -89,6 +90,11 @@ const countries = new Set([
   `Japan`
 ]);
 
+
+/**
+ * Function for generate mock data for film
+ * @return {Object}
+ */
 export default () => ({
   title: getRandomValue(titles),
   poster: getRandomValue(posters),
@@ -98,9 +104,9 @@ export default () => ({
   description: getRandomArrayElements(descriptions, 3).join(`. `),
   duration: generateRandomNumber(180, 60),
   type: getRandomValue(Array.from(types)),
-  season: generateRandomNumber(11, 1),
+  season: generateRandomNumber(MAX_FILM_RATING + 1, 1),
   episodes: generateRandomNumber(25, 1),
-  genre: getRandomValue(Array.from(genres)),
+  genres: getRandomArrayElements(Array.from(genres), 3),
   restrictions: getRandomValue(Array.from(restrictions)),
   premiere: Date.now() + generateRandomNumber(Time.YEAR + 1, -Time.YEAR * 100) * Time.DAY * Time.HOUR * Time.MINUTE * Time.SECOND,
   dvd: Date.now() + generateRandomNumber(Time.YEAR + 1, -Time.YEAR * 10) * Time.DAY * Time.HOUR * Time.MINUTE * Time.SECOND,
