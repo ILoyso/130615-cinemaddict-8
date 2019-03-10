@@ -35,11 +35,10 @@ export default class FilmPopup {
    */
   _convertDate() {
     const dateStandart = new Date(this._premiere);
-    const convertedDate = dateStandart.toString().split(` `);
     let fullDate = {};
-    fullDate.day = convertedDate[2];
+    fullDate.day = dateStandart.getDate();
     fullDate.month = months[dateStandart.getMonth()];
-    fullDate.year = convertedDate[0];
+    fullDate.year = dateStandart.getFullYear();
 
     return fullDate;
   }
