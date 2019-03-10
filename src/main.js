@@ -39,10 +39,10 @@ const generateFilmsData = (amount) => generateFilms(amount);
 
 /**
  * Function for render films
- * @param {Node} dist
+ * @param {Node} container
  * @param {Object[]} films
  */
-const renderFilms = (dist, films) => {
+const renderFilms = (container, films) => {
   const fragment = document.createDocumentFragment();
 
   films.forEach((film) => {
@@ -62,18 +62,18 @@ const renderFilms = (dist, films) => {
     fragment.appendChild(filmComponent.render());
   });
 
-  dist.appendChild(fragment);
+  container.appendChild(fragment);
 };
 
 
 /**
  * Function for render top films
- * @param {NodeListOf} dists
+ * @param {NodeListOf} containers
  * @param {Object[]} films
  */
-const renderTopFilms = (dists, films) => {
-  dists.forEach((dist) => {
-    renderFilms(dist, films);
+const renderTopFilms = (containers, films) => {
+  containers.forEach((container) => {
+    renderFilms(container, films);
   });
 };
 
