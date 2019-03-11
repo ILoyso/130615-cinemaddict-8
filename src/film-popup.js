@@ -1,13 +1,16 @@
-import {months, MAX_FILM_RATING, createElement} from "./utils";
+import {months, MAX_FILM_RATING} from "./utils";
+import Component from "./component";
 
 /** Class representing a film popup */
-export default class FilmPopup {
+export default class FilmPopup extends Component {
 
   /**
    * Create a popup
    * @param {Object} data
    */
   constructor(data) {
+    super();
+
     this._title = data.title;
     this._originalTitle = data.originalTitle;
     this._poster = data.poster;
@@ -26,6 +29,7 @@ export default class FilmPopup {
 
     this._element = null;
     this._onClose = null;
+    this._onCloseButtonClick = this._onCloseButtonClick.bind(this);
   }
 
   /**
@@ -84,14 +88,6 @@ export default class FilmPopup {
    */
   set onClose(fn) {
     this._onClose = fn;
-  }
-
-  /**
-   * Getter for DOM element (if it is)
-   * @return {Node}
-   */
-  get element() {
-    return this._element;
   }
 
   /**
@@ -240,27 +236,11 @@ export default class FilmPopup {
 
   /** Method for bing function to close button */
   bind() {
-    this._element.querySelector(`.film-details__close-btn`).addEventListener(`click`, this._onCloseButtonClick.bind(this));
-  }
-
-  /**
-   * Method for render popup and add events
-   * @return {Node}
-   */
-  render() {
-    this._element = createElement(this.template);
-    this.bind();
-    return this._element;
+    this._element.querySelector(`.film-details__close-btn`).addEventListener(`click`, this._onCloseButtonClick);
   }
 
   /** Method for unbing function from close button */
   unbind() {
-    this._element.querySelector(`.film-details__close-btn`).removeEventListener(`click`, this._onCloseButtonClick.bind(this));
-  }
-
-  /** Method for unrender popup */
-  unrender() {
-    this.unbind();
-    this._element = null;
+    this._element.querySelector(`.film-details__close-btn`).removeEventListener(`click`, this._onCloseButtonClick);
   }
 }

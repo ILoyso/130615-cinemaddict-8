@@ -1,13 +1,16 @@
-import {Time, createElement} from "./utils";
+import {Time} from "./utils";
+import Component from "./component";
 
 /** Class representing a film */
-export default class Film {
+export default class Film extends Component {
 
   /**
    * Create c film
    * @param {Object} data
    */
   constructor(data) {
+    super();
+
     this._title = data.title;
     this._poster = data.poster;
     this._year = data.year;
@@ -22,6 +25,7 @@ export default class Film {
 
     this._element = null;
     this._onComments = null;
+    this._onCommentsClick = this._onCommentsClick.bind(this);
   }
 
   /**
@@ -77,28 +81,11 @@ export default class Film {
 
   /** Method for bing function to comments */
   bind() {
-    this._element.querySelector(`.film-card__comments`).addEventListener(`click`, this._onCommentsClick.bind(this));
-  }
-
-  /**
-   * Method for render film and add events
-   * @return {Node}
-   */
-  render() {
-    this._element = createElement(this.template);
-    this.bind();
-    return this._element;
+    this._element.querySelector(`.film-card__comments`).addEventListener(`click`, this._onCommentsClick);
   }
 
   /** Method for unbing function from comments */
   unbind() {
-    this._element.querySelector(`.film-card__comments`).removeEventListener(`submit`, this._onCommentsClick.bind(this));
+    this._element.querySelector(`.film-card__comments`).removeEventListener(`submit`, this._onCommentsClick);
   }
-
-  /** Method for unrender film */
-  unrender() {
-    this.unbind();
-    this._element = null;
-  }
-
 }
