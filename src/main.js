@@ -47,16 +47,17 @@ const renderFilms = (container, films) => {
 
   films.forEach((film) => {
     const filmComponent = new Film(film);
-    const filmPopupComponent = new FilmPopup(film);
 
     filmComponent.onCommentsClick = () => {
+      const filmPopupComponent = new FilmPopup(film);
+
+      filmPopupComponent.onClose = () => {
+        body.removeChild(filmPopupComponent.element);
+        filmPopupComponent.unrender();
+      };
+
       filmPopupComponent.render();
       body.appendChild(filmPopupComponent.element);
-    };
-
-    filmPopupComponent.onClose = () => {
-      body.removeChild(filmPopupComponent.element);
-      filmPopupComponent.unrender();
     };
 
     fragment.appendChild(filmComponent.render());
