@@ -1,4 +1,5 @@
 export const MAX_FILM_RATING = 10;
+export const ENTER_KEY_CODE = 13;
 
 export const Time = {
   YEAR: 365,

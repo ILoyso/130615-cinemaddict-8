@@ -115,5 +115,13 @@ export default () => ({
   country: getRandomValue(Array.from(countries)),
   isFavorite: generateRandomBoolean(),
   isViewed: generateRandomBoolean(),
-  isGoingToWatch: generateRandomBoolean()
+  isGoingToWatch: generateRandomBoolean(),
+  comments: [
+    {
+      text: `So long-long story, boring!`,
+      author: `Tim Macoveev`,
+      emoji: `😴`,
+      date: Date.now()
+    }
+  ]
 });

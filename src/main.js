@@ -51,7 +51,8 @@ const renderFilms = (container, films) => {
     filmComponent.onCommentsClick = () => {
       const filmPopupComponent = new FilmPopup(film);
 
-      filmPopupComponent.onClose = () => {
+      filmPopupComponent.onClose = (newObject) => {
+        filmComponent.update(Object.assign(film, newObject));
         body.removeChild(filmPopupComponent.element);
         filmPopupComponent.unrender();
       };

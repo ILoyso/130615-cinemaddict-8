@@ -18,6 +18,8 @@ export default class Film extends Component {
     this._duration = data.duration;
     this._genres = data.genres;
     this._rating = data.rating;
+    this._userRating = data.userRating;
+    this._comments = data.comments;
     this._isFavorite = data.isFavorite;
     this._isViewed = data.isViewed;
     this._isGoingToWatch = data.isGoingToWatch;
@@ -52,6 +54,14 @@ export default class Film extends Component {
   }
 
   /**
+   * Method for update template
+   * @private
+   */
+  _updateTemplate() {
+    this._element.innerHTML = this.template;
+  }
+
+  /**
    * Setter for function that will be work on Comments click
    * @param {Function} fn
    */
@@ -74,7 +84,7 @@ export default class Film extends Component {
           </p>
           <img src="./images/posters/${this._poster}.jpg" alt="" class="film-card__poster">
           <p class="film-card__description">${this._description}</p>
-          <button class="film-card__comments">13 comments</button>
+          <button class="film-card__comments">${this._comments.length} comment${this._comments.length > 1 ? `s` : ``}</button>
           ${this._hasControls ? this._getControlsTemplate() : ``}
         </article>`;
   }
@@ -87,5 +97,20 @@ export default class Film extends Component {
   /** Method for unbing function from comments */
   unbind() {
     this._element.querySelector(`.film-card__comments`).removeEventListener(`submit`, this._onCommentsClick);
+  }
+
+  /**
+   * Method for update film regarding new data
+   * @param {Object} data
+   */
+  update(data) {
+    this._userRating = data.userRating;
+    this._comments = data.comments;
+    this._isFavorite = data.isFavorite;
+    this._isViewed = data.isViewed;
+    this._isGoingToWatch = data.isGoingToWatch;
+    this._updateTemplate();
+    this.unbind();
+    this.bind();
   }
 }
