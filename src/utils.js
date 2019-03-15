@@ -9,22 +9,6 @@ export const Time = {
   SECOND: 1000
 };
 
-export const months = [
-  `January`,
-  `February`,
-  `March`,
-  `April`,
-  `May`,
-  `June`,
-  `July`,
-  `August`,
-  `September`,
-  `October`,
-  `November`,
-  `December`
-];
-
-
 /**
  * Function for denerate random number, not including max
  * @param {Number} max

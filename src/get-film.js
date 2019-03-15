@@ -99,10 +99,9 @@ export default () => ({
   title: getRandomValue(titles),
   poster: getRandomValue(posters),
   originalTitle: getRandomValue(titles),
-  year: generateRandomNumber(2019, 1900),
   actors: getRandomArrayElements(actors, 3),
   description: getRandomArrayElements(descriptions, 3).join(`. `),
-  duration: generateRandomNumber(180, 60),
+  duration: generateRandomNumber(3600000, 10800000), // milisec
   type: getRandomValue(Array.from(types)),
   season: generateRandomNumber(MAX_FILM_RATING + 1, 1),
   episodes: generateRandomNumber(25, 1),

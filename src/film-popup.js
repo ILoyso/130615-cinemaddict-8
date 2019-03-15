@@ -1,5 +1,6 @@
-import {months, MAX_FILM_RATING, ENTER_KEY_CODE} from "./utils";
+import {MAX_FILM_RATING, ENTER_KEY_CODE} from "./utils";
 import Component from "./component";
+import moment from 'moment';
 
 /** Class representing a film popup */
 export default class FilmPopup extends Component {
@@ -37,21 +38,6 @@ export default class FilmPopup extends Component {
   }
 
   /**
-   * Method for converting data
-   * @return {Object}
-   * @private
-   */
-  _convertDate() {
-    const dateStandart = new Date(this._premiere);
-    let fullDate = {};
-    fullDate.day = dateStandart.getDate();
-    fullDate.month = months[dateStandart.getMonth()];
-    fullDate.year = dateStandart.getFullYear();
-
-    return fullDate;
-  }
-
-  /**
    * Method for creating comments template
    * @return {String}
    * @private
@@ -63,7 +49,7 @@ export default class FilmPopup extends Component {
             <p class="film-details__comment-text">${comment.text}</p>
             <p class="film-details__comment-info">
               <span class="film-details__comment-author">${comment.author}</span>
-              <span class="film-details__comment-day">${comment.date}</span>
+              <span class="film-details__comment-day">${moment(comment.date).startOf(`min`).fromNow()}</span>
             </p>
           </div>
         </li>`).join(``);
@@ -107,7 +93,7 @@ export default class FilmPopup extends Component {
       newComment.text = textarea.value;
       newComment.author = `Me`;
       newComment.emoji = this._element.querySelector(`.film-details__emoji-item:checked + label`).textContent;
-      newComment.date = Date.now();
+      newComment.date = moment();
 
       this._comments.push(newComment);
 
@@ -230,11 +216,11 @@ export default class FilmPopup extends Component {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${this._convertDate().day} ${this._convertDate().month} ${this._convertDate().year} (${this._country})</td>
+                <td class="film-details__cell">${moment(this._premiere).format(`D MMMM YYYY`)} (${this._country})</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${this._duration} min</td>
+                <td class="film-details__cell">${Math.trunc(moment.duration(this._duration).asMinutes())} min</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
