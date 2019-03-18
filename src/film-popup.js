@@ -86,7 +86,7 @@ export default class FilmPopup extends Component {
    * @private
    */
   _onAddComment(evt) {
-    if (evt.keyCode === ENTER_KEY_CODE) {
+    if ((evt.ctrlKey || evt.metaKey) && (evt.keyCode === ENTER_KEY_CODE)) {
       evt.preventDefault();
       const newComment = {};
       const textarea = this._element.querySelector(`.film-details__comment-input`);
