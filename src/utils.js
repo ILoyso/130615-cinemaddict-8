@@ -1,4 +1,5 @@
 export const MAX_FILM_RATING = 10;
+export const ENTER_KEY_CODE = 13;
 
 export const Time = {
   YEAR: 365,
@@ -7,22 +8,6 @@ export const Time = {
   MINUTE: 60,
   SECOND: 1000
 };
-
-export const months = [
-  `January`,
-  `February`,
-  `March`,
-  `April`,
-  `May`,
-  `June`,
-  `July`,
-  `August`,
-  `September`,
-  `October`,
-  `November`,
-  `December`
-];
-
 
 /**
  * Function for denerate random number, not including max

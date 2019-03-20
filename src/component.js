@@ -52,4 +52,7 @@ export default class Component {
     this._element.remove();
     this._element = null;
   }
+
+  /** Method for updating component */
+  update() {}
 }

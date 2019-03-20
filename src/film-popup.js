@@ -1,5 +1,6 @@
-import {months, MAX_FILM_RATING} from "./utils";
+import {MAX_FILM_RATING, ENTER_KEY_CODE} from "./utils";
 import Component from "./component";
+import moment from 'moment';
 
 /** Class representing a film popup */
 export default class FilmPopup extends Component {
@@ -23,6 +24,7 @@ export default class FilmPopup extends Component {
     this._userRating = data.userRating;
     this._rating = data.rating;
     this._country = data.country;
+    this._comments = data.comments;
     this._isFavorite = data.isFavorite;
     this._isViewed = data.isViewed;
     this._isGoingToWatch = data.isGoingToWatch;
@@ -30,21 +32,27 @@ export default class FilmPopup extends Component {
     this._element = null;
     this._onClose = null;
     this._onCloseButtonClick = this._onCloseButtonClick.bind(this);
+    this._onChangeEmoji = this._onChangeEmoji.bind(this);
+    this._onAddComment = this._onAddComment.bind(this);
+    this._onChangeRating = this._onChangeRating.bind(this);
   }
 
   /**
-   * Method for converting data
-   * @return {Object}
+   * Method for creating comments template
+   * @return {String}
    * @private
    */
-  _convertDate() {
-    const dateStandart = new Date(this._premiere);
-    let fullDate = {};
-    fullDate.day = dateStandart.getDate();
-    fullDate.month = months[dateStandart.getMonth()];
-    fullDate.year = dateStandart.getFullYear();
-
-    return fullDate;
+  _getCommentsTemplate() {
+    return this._comments.map((comment) => `<li class="film-details__comment">
+          <span class="film-details__comment-emoji">${comment.emoji}</span>
+          <div>
+            <p class="film-details__comment-text">${comment.text}</p>
+            <p class="film-details__comment-info">
+              <span class="film-details__comment-author">${comment.author}</span>
+              <span class="film-details__comment-day">${moment(comment.date).startOf(`min`).fromNow()}</span>
+            </p>
+          </div>
+        </li>`).join(``);
   }
 
   /**
@@ -73,13 +81,86 @@ export default class FilmPopup extends Component {
   }
 
   /**
+   * Method for adding new comment
+   * @param {Event} evt
+   * @private
+   */
+  _onAddComment(evt) {
+    if ((evt.ctrlKey || evt.metaKey) && (evt.keyCode === ENTER_KEY_CODE)) {
+      evt.preventDefault();
+      const newComment = {};
+      const textarea = this._element.querySelector(`.film-details__comment-input`);
+      newComment.text = textarea.value;
+      newComment.author = `Me`;
+      newComment.emoji = this._element.querySelector(`.film-details__emoji-item:checked + label`).textContent;
+      newComment.date = moment();
+
+      this._comments.push(newComment);
+
+      textarea.value = ``;
+      this._element.querySelector(`.film-details__add-emoji`).checked = false;
+      this._element.querySelector(`.film-details__comments-list`).innerHTML = this._getCommentsTemplate();
+    }
+  }
+
+  /**
+   * Method for update emoji
+   * @private
+   */
+  _onChangeEmoji() {
+    const emoji = this._element.querySelector(`.film-details__emoji-item:checked + label`).textContent;
+    this._element.querySelector(`.film-details__add-emoji-label`).innerHTML = emoji;
+  }
+
+  /**
+   * Method for update user rating
+   * @private
+   */
+  _onChangeRating() {
+    this._userRating = this._element.querySelector(`.film-details__user-rating-input:checked`).value;
+    this._element.querySelector(`.film-details__user-rating span`).innerHTML = this._userRating;
+  }
+
+  /**
    * Method for check for function and if yes to white it in this._onClose
    * @private
    */
   _onCloseButtonClick() {
+    const formData = new FormData(this._element.querySelector(`.film-details__inner`));
+    const newData = this._processForm(formData);
+
     if (typeof this._onClose === `function`) {
-      this._onClose();
+      this._onClose(newData);
     }
+
+    this.update(newData);
+  }
+
+  /**
+   * Method for saving updated data
+   * @param {FormData} formData
+   * @return {Object}
+   * @private
+   */
+  _processForm(formData) {
+    const entry = {
+      userRating: this._userRating,
+      comments: this._comments,
+      isFavorite: this._isFavorite,
+      isViewed: this._isViewed,
+      isGoingToWatch: this._isGoingToWatch
+    };
+
+    const filmPopupMapper = FilmPopup.createMapper(entry);
+
+    for (const pair of formData.entries()) {
+      const [property, value] = pair;
+      if (filmPopupMapper[property]) {
+        filmPopupMapper[property](value);
+      }
+    }
+
+    return entry;
   }
 
   /**
@@ -116,7 +197,7 @@ export default class FilmPopup extends Component {
     
               <div class="film-details__rating">
                 <p class="film-details__total-rating">${this._rating}</p>
-                <p class="film-details__user-rating">Your rate ${this._userRating}</p>
+                <p class="film-details__user-rating">Your rate <span>${this._userRating}</span></p>
               </div>
             </div>
     
@@ -135,11 +216,11 @@ export default class FilmPopup extends Component {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${this._convertDate().day} ${this._convertDate().month} ${this._convertDate().year} (${this._country})</td>
+                <td class="film-details__cell">${moment(this._premiere).format(`D MMMM YYYY`)} (${this._country})</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${this._duration} min</td>
+                <td class="film-details__cell">${Math.trunc(moment.duration(this._duration).asMinutes())} min</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
@@ -171,21 +252,12 @@ export default class FilmPopup extends Component {
         </section>
     
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">1</span></h3>
-    
+          <h3 class="film-details__comments-title">Comment${this._comments.length > 1 ? `s` : ``} <span class="film-details__comments-count">${this._comments.length}</span></h3>
+          
           <ul class="film-details__comments-list">
-            <li class="film-details__comment">
-              <span class="film-details__comment-emoji">😴</span>
-              <div>
-                <p class="film-details__comment-text">So long-long story, boring!</p>
-                <p class="film-details__comment-info">
-                  <span class="film-details__comment-author">Tim Macoveev</span>
-                  <span class="film-details__comment-day">3 days ago</span>
-                </p>
-              </div>
-            </li>
+            ${this._getCommentsTemplate()}
           </ul>
-    
+          
           <div class="film-details__new-comment">
             <div>
               <label for="add-emoji" class="film-details__add-emoji-label">😐</label>
@@ -237,10 +309,64 @@ export default class FilmPopup extends Component {
   /** Method for bing function to close button */
   bind() {
     this._element.querySelector(`.film-details__close-btn`).addEventListener(`click`, this._onCloseButtonClick);
+
+    this._element.querySelectorAll(`.film-details__emoji-item`).forEach((element) => {
+      element.addEventListener(`click`, this._onChangeEmoji);
+    });
+
+    this._element.querySelector(`.film-details__comment-input`).addEventListener(`keydown`, this._onAddComment);
+
+    this._element.querySelectorAll(`.film-details__user-rating-input`).forEach((element) => {
+      element.addEventListener(`click`, this._onChangeRating);
+    });
   }
 
   /** Method for unbing function from close button */
   unbind() {
     this._element.querySelector(`.film-details__close-btn`).removeEventListener(`click`, this._onCloseButtonClick);
+
+    this._element.querySelectorAll(`.film-details__emoji-item`).forEach((element) => {
+      element.removeEventListener(`click`, this._onChangeEmoji);
+    });
+
+    this._element.querySelector(`.film-details__comment-input`).removeEventListener(`keydown`, this._onAddComment);
+
+    this._element.querySelectorAll(`.film-details__user-rating-input`).forEach((element) => {
+      element.removeEventListener(`click`, this._onChangeRating);
+    });
+  }
+
+  /**
+   * Method for update popup regarding new data
+   * @param {Object} data
+   */
+  update(data) {
+    this._userRating = data.userRating;
+    this._comments = data.comments;
+    this._isFavorite = data.isFavorite;
+    this._isViewed = data.isViewed;
+    this._isGoingToWatch = data.isGoingToWatch;
+  }
+
+  /**
+   * Method for mapping data from form
+   * @param {Object} target
+   * @return {Object}
+   */
+  static createMapper(target) {
+    return {
+      score: (value) => {
+        target.userRating = parseInt(value, 10);
+      },
+      watchlist: (value) => {
+        target.isGoingToWatch = value === `on`;
+      },
+      watched: (value) => {
+        target.isViewed = value === `on`;
+      },
+      favorite: (value) => {
+        target.isFavorite = value === `on`;
+      }
+    };
   }
 }
