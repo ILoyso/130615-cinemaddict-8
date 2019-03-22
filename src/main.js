@@ -1,32 +1,16 @@
-import {generateRandomNumber, renderTemplate} from './utils';
-import makeFilter from './make-filter';
-import filters from './get-filters';
+import filtersData from './get-filters';
 import generateFilms from './generate-films';
 import Film from './film';
 import FilmPopup from './film-popup';
+import Filter from './filter';
 
 const MAX_NUMBER_OF_FILMS = 7;
 const NUMBER_OF_TOP_FILMS = 2;
-const FILTER_ACTIVE_CLASS = `main-navigation__item--active`;
 
 const body = document.querySelector(`body`);
 const filtersContainer = document.querySelector(`.main-navigation`);
 const filmsContainer = document.querySelector(`.films-list .films-list__container`);
 const filmsTopContainers = document.querySelectorAll(`.films-list--extra .films-list__container`);
-
-
-/**
- * Function for create filters template
- * @param {Object[]} filtersData
- * @return {String}
- */
-const createFiltersTemplate = (filtersData) => {
-  let filtersTemplate = ``;
-  for (const filter of filtersData) {
-    filtersTemplate += makeFilter(filter.name, generateRandomNumber(15, 1), filter.isActive, filter.isAdditional);
-  }
-  return filtersTemplate;
-};
 
 
 /**
@@ -36,6 +20,9 @@ const createFiltersTemplate = (filtersData) => {
  */
 const generateFilmsData = (amount) => generateFilms(amount);
 
+const filmsData = generateFilmsData(MAX_NUMBER_OF_FILMS);
+const topFilmsData = generateFilmsData(NUMBER_OF_TOP_FILMS);
+
 
 /**
  * Function for render films
@@ -43,16 +30,32 @@ const generateFilmsData = (amount) => generateFilms(amount);
  * @param {Object[]} films
  */
 const renderFilms = (container, films) => {
+  container.innerHTML = ``;
   const fragment = document.createDocumentFragment();
 
   films.forEach((film) => {
     const filmComponent = new Film(film);
 
+    filmComponent.onAddToWatchList = () => {
+      film.isGoingToWatch = !film.isGoingToWatch;
+      filmComponent.update(film);
+    };
+
+    filmComponent.onAddToFavorite = () => {
+      film.isFavorite = !film.isFavorite;
+      filmComponent.update(film);
+    };
+
+    filmComponent.onMarkAsWatched = () => {
+      film.isViewed = !film.isViewed;
+      filmComponent.update(film);
+    };
+
     filmComponent.onCommentsClick = () => {
       const filmPopupComponent = new FilmPopup(film);
 
-      filmPopupComponent.onClose = (newObject) => {
-        filmComponent.update(Object.assign(film, newObject));
+      filmPopupComponent.onClose = (updatedFilm) => {
+        filmComponent.update(Object.assign(film, updatedFilm));
         body.removeChild(filmPopupComponent.element);
         filmPopupComponent.unrender();
       };
@@ -81,22 +84,83 @@ const renderTopFilms = (containers, films) => {
 
 
 /**
- * Function for filter click action
- * @param {Event} evt
+ * Function for filter films
+ * @param {Object} films
+ * @param {String} filterName
+ * @return {Object}
  */
-const onFilterClick = (evt) => {
-  const clickedTag = evt.target;
-  if ((clickedTag.tagName.toLowerCase() === `a`) && (!clickedTag.classList.contains(FILTER_ACTIVE_CLASS))) {
-    filmsContainer.innerHTML = ``;
-    renderFilms(filmsContainer, generateFilmsData(generateRandomNumber(10, 1)));
-    renderTopFilms(filmsTopContainers, generateFilmsData(generateRandomNumber(4, 1)));
+const filterFilms = (films, filterName) => {
+  let filteredFilms = films;
+
+  switch (filterName) {
+    case `all`:
+      filteredFilms = films;
+      break;
+    case `watchlist`:
+      filteredFilms = films.filter((it) => it.isGoingToWatch);
+      break;
+    case `history`:
+      filteredFilms = films.filter((it) => it.isViewed);
+      break;
+    case `favorites`:
+      filteredFilms = films.filter((it) => it.isFavorite);
+      break;
   }
+
+  return filteredFilms;
 };
 
 
-renderTemplate(filtersContainer, createFiltersTemplate(filters));
-renderFilms(filmsContainer, generateFilmsData(MAX_NUMBER_OF_FILMS));
-renderTopFilms(filmsTopContainers, generateFilmsData(NUMBER_OF_TOP_FILMS));
+/**
+ * Function for update active filter
+ * @param {Object} activeFilter
+ * @param {Object[]} filters
+ * @return {Object[]}
+ */
+const updateActiveFilter = (activeFilter, filters) => {
+  for (const filter of filters) {
+    if (filter.isActive) {
+      filter.isActive = false;
+      break;
+    }
+  }
+  activeFilter.isActive = true;
+  return filters;
+};
 
-filtersContainer.addEventListener(`click`, onFilterClick);
+/**
+ * Function for render filters
+ * @param {Node} container
+ * @param {Object} filters
+ * @param {Object} films
+ */
+const renderFilters = (container, filters, films) => {
+  container.innerHTML = ``;
+  const fragment = document.createDocumentFragment();
+
+  filters.forEach((filter) => {
+    const filterComponent = new Filter(filter);
+
+    filterComponent.onFilter = () => {
+      const filterName = filterComponent.filterId;
+      const filteredFilms = filterFilms(films, filterName);
+      filters = updateActiveFilter(filter, filters);
+      filter.isActive = true;
+      filterComponent.update(filter);
+
+      renderFilms(filmsContainer, filteredFilms);
+      renderFilters(container, filters, films);
+    };
+
+    fragment.appendChild(filterComponent.render());
+  });
+
+  container.appendChild(fragment);
+};
+
+
+renderFilms(filmsContainer, filmsData);
+renderTopFilms(filmsTopContainers, topFilmsData);
+
+renderFilters(filtersContainer, filtersData, filmsData);
 

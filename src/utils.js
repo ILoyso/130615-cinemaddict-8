@@ -52,16 +52,6 @@ export const getRandomArrayElements = (array, amount) => {
 
 
 /**
- * Function for render string template to the DOM element
- * @param {Node} parent
- * @param {String} template
- */
-export const renderTemplate = (parent, template) => {
-  parent.insertAdjacentHTML(`beforeend`, template);
-};
-
-
-/**
  * Function for creating DOM element
  * @param {String} template
  * @return {Node}
