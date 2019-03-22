@@ -12,7 +12,6 @@ export default class Filter extends Component {
 
     this._name = filter.name;
     this._id = this._name.toLowerCase();
-    this._isAdditional = filter.isAdditional ? true : false;
     this._isActive = filter.isActive ? true : false;
 
     this._element = null;
@@ -56,7 +55,7 @@ export default class Filter extends Component {
   get template() {
     const amountTemplate = `<span class="main-navigation__item-count">n</span>`;
 
-    return `<a href="#${this._id}" class="main-navigation__item ${this._isActive ? `main-navigation__item--active` : ``} ${this._isAdditional ? `main-navigation__item--additional` : ``}">
+    return `<a href="#${this._id}" class="main-navigation__item ${this._isActive ? `main-navigation__item--active` : ``}">
             ${this._name}
             ${this._isActive ? `` : amountTemplate}
           </a>`;

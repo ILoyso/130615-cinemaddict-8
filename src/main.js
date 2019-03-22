@@ -8,7 +8,7 @@ const MAX_NUMBER_OF_FILMS = 7;
 const NUMBER_OF_TOP_FILMS = 2;
 
 const body = document.querySelector(`body`);
-const filtersContainer = document.querySelector(`.main-navigation`);
+const filtersContainer = document.querySelector(`.main-navigation__nav`);
 const filmsContainer = document.querySelector(`.films-list .films-list__container`);
 const filmsTopContainers = document.querySelectorAll(`.films-list--extra .films-list__container`);
 
@@ -161,6 +161,4 @@ const renderFilters = (container, filters, films) => {
 
 renderFilms(filmsContainer, filmsData);
 renderTopFilms(filmsTopContainers, topFilmsData);
-
 renderFilters(filtersContainer, filtersData, filmsData);
-
