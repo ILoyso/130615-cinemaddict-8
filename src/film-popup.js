@@ -73,7 +73,7 @@ export default class FilmPopup extends Component {
     let ratingTemplate = ``;
 
     for (let i = 1; i <= MAX_FILM_RATING; i++) {
-      ratingTemplate += `<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${i}" id="rating-${i}" ${this._userRating === i ? `checked` : ``}>
+      ratingTemplate += `<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${i}" id="rating-${i}" ${this._userRating.rating === i ? `checked` : ``}>
                 <label class="film-details__user-rating-label" for="rating-${i}">${i}</label>`;
     }
 
@@ -117,8 +117,8 @@ export default class FilmPopup extends Component {
    * @private
    */
   _onChangeRating() {
-    this._userRating = this._element.querySelector(`.film-details__user-rating-input:checked`).value;
-    this._element.querySelector(`.film-details__user-rating span`).innerHTML = this._userRating;
+    this._userRating.rating = this._element.querySelector(`.film-details__user-rating-input:checked`).value;
+    this._element.querySelector(`.film-details__user-rating span`).innerHTML = this._userRating.rating;
   }
 
   /**
@@ -197,7 +197,7 @@ export default class FilmPopup extends Component {
     
               <div class="film-details__rating">
                 <p class="film-details__total-rating">${this._rating}</p>
-                <p class="film-details__user-rating">Your rate <span>${this._userRating}</span></p>
+                <p class="film-details__user-rating">Your rate <span>${this._userRating.rating}</span></p>
               </div>
             </div>
     
@@ -356,7 +356,7 @@ export default class FilmPopup extends Component {
   static createMapper(target) {
     return {
       score: (value) => {
-        target.userRating = parseInt(value, 10);
+        target.userRating.rating = parseInt(value, 10);
       },
       watchlist: (value) => {
         target.isGoingToWatch = value === `on`;
