@@ -105,11 +105,15 @@ export default () => ({
   type: getRandomValue(Array.from(types)),
   season: generateRandomNumber(MAX_FILM_RATING + 1, 1),
   episodes: generateRandomNumber(25, 1),
-  genres: getRandomArrayElements(Array.from(genres), 3),
+  genres: getRandomArrayElements(Array.from(genres), generateRandomNumber(4, 1)),
   restrictions: getRandomValue(Array.from(restrictions)),
   premiere: Date.now() + generateRandomNumber(Time.YEAR + 1, -Time.YEAR * 100) * Time.DAY * Time.HOUR * Time.MINUTE * Time.SECOND,
   dvd: Date.now() + generateRandomNumber(Time.YEAR + 1, -Time.YEAR * 10) * Time.DAY * Time.HOUR * Time.MINUTE * Time.SECOND,
-  userRating: generateRandomNumber(11, 1),
+  userRating: {
+    userId: 1,
+    rating: generateRandomNumber(11, 1),
+    date: Date.now() + generateRandomNumber(1, -Time.MONTH) * Time.DAY * Time.HOUR * Time.MINUTE * Time.SECOND
+  },
   rating: generateRandomNumber(11, 1),
   country: getRandomValue(Array.from(countries)),
   isFavorite: generateRandomBoolean(),

@@ -7,27 +7,27 @@ export default class FilmPopup extends Component {
 
   /**
    * Create a popup
-   * @param {Object} data
+   * @param {Object} film
    */
-  constructor(data) {
+  constructor(film) {
     super();
 
-    this._title = data.title;
-    this._originalTitle = data.originalTitle;
-    this._poster = data.poster;
-    this._actors = data.actors;
-    this._description = data.description;
-    this._duration = data.duration;
-    this._genres = data.genres;
-    this._restrictions = data.restrictions;
-    this._premiere = data.premiere;
-    this._userRating = data.userRating;
-    this._rating = data.rating;
-    this._country = data.country;
-    this._comments = data.comments;
-    this._isFavorite = data.isFavorite;
-    this._isViewed = data.isViewed;
-    this._isGoingToWatch = data.isGoingToWatch;
+    this._title = film.title;
+    this._originalTitle = film.originalTitle;
+    this._poster = film.poster;
+    this._actors = film.actors;
+    this._description = film.description;
+    this._duration = film.duration;
+    this._genres = film.genres;
+    this._restrictions = film.restrictions;
+    this._premiere = film.premiere;
+    this._userRating = film.userRating;
+    this._rating = film.rating;
+    this._country = film.country;
+    this._comments = film.comments;
+    this._isFavorite = film.isFavorite;
+    this._isViewed = film.isViewed;
+    this._isGoingToWatch = film.isGoingToWatch;
 
     this._element = null;
     this._onClose = null;
@@ -73,7 +73,7 @@ export default class FilmPopup extends Component {
     let ratingTemplate = ``;
 
     for (let i = 1; i <= MAX_FILM_RATING; i++) {
-      ratingTemplate += `<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${i}" id="rating-${i}" ${this._userRating === i ? `checked` : ``}>
+      ratingTemplate += `<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${i}" id="rating-${i}" ${this._userRating.rating === i ? `checked` : ``}>
                 <label class="film-details__user-rating-label" for="rating-${i}">${i}</label>`;
     }
 
@@ -117,8 +117,8 @@ export default class FilmPopup extends Component {
    * @private
    */
   _onChangeRating() {
-    this._userRating = this._element.querySelector(`.film-details__user-rating-input:checked`).value;
-    this._element.querySelector(`.film-details__user-rating span`).innerHTML = this._userRating;
+    this._userRating.rating = this._element.querySelector(`.film-details__user-rating-input:checked`).value;
+    this._element.querySelector(`.film-details__user-rating span`).innerHTML = this._userRating.rating;
   }
 
   /**
@@ -146,9 +146,9 @@ export default class FilmPopup extends Component {
     const entry = {
       userRating: this._userRating,
       comments: this._comments,
-      isFavorite: this._isFavorite,
-      isViewed: this._isViewed,
-      isGoingToWatch: this._isGoingToWatch
+      isFavorite: false,
+      isViewed: false,
+      isGoingToWatch: false
     };
 
     const filmPopupMapper = FilmPopup.createMapper(entry);
@@ -197,7 +197,7 @@ export default class FilmPopup extends Component {
     
               <div class="film-details__rating">
                 <p class="film-details__total-rating">${this._rating}</p>
-                <p class="film-details__user-rating">Your rate <span>${this._userRating}</span></p>
+                <p class="film-details__user-rating">Your rate <span>${this._userRating.rating}</span></p>
               </div>
             </div>
     
@@ -282,7 +282,7 @@ export default class FilmPopup extends Component {
     
         <section class="film-details__user-rating-wrap">
           <div class="film-details__user-rating-controls">
-            <span class="film-details__watched-status film-details__watched-status--active">Already watched</span>
+            <span class="film-details__watched-status ${this._isViewed ? `film-details__watched-status--active` : ``}">${this._isViewed ? `Already watched` : `not watched`}</span>
             <button class="film-details__watched-reset" type="button">undo</button>
           </div>
     
@@ -338,14 +338,14 @@ export default class FilmPopup extends Component {
 
   /**
    * Method for update popup regarding new data
-   * @param {Object} data
+   * @param {Object} film
    */
-  update(data) {
-    this._userRating = data.userRating;
-    this._comments = data.comments;
-    this._isFavorite = data.isFavorite;
-    this._isViewed = data.isViewed;
-    this._isGoingToWatch = data.isGoingToWatch;
+  update(film) {
+    this._userRating = film.userRating;
+    this._comments = film.comments;
+    this._isFavorite = film.isFavorite;
+    this._isViewed = film.isViewed;
+    this._isGoingToWatch = film.isGoingToWatch;
   }
 
   /**
@@ -356,7 +356,7 @@ export default class FilmPopup extends Component {
   static createMapper(target) {
     return {
       score: (value) => {
-        target.userRating = parseInt(value, 10);
+        target.userRating.rating = parseInt(value, 10);
       },
       watchlist: (value) => {
         target.isGoingToWatch = value === `on`;

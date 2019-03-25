@@ -135,6 +135,10 @@ a:hover {
   font-weight: 800;
 }
 
+.main-navigation__nav {
+  display: flex;
+}
+
 .main-navigation__item {
   color: var(--text-color);
   margin-right: 40px;

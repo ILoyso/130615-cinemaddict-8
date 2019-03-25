@@ -6,28 +6,35 @@ export default class Film extends Component {
 
   /**
    * Create c film
-   * @param {Object} data
+   * @param {Object} film
    */
-  constructor(data) {
+  constructor(film) {
     super();
 
-    this._title = data.title;
-    this._poster = data.poster;
-    this._description = data.description;
-    this._duration = data.duration;
-    this._genres = data.genres;
-    this._rating = data.rating;
-    this._userRating = data.userRating;
-    this._comments = data.comments;
-    this._premiere = data.premiere;
-    this._isFavorite = data.isFavorite;
-    this._isViewed = data.isViewed;
-    this._isGoingToWatch = data.isGoingToWatch;
+    this._title = film.title;
+    this._poster = film.poster;
+    this._description = film.description;
+    this._duration = film.duration;
+    this._genres = film.genres;
+    this._rating = film.rating;
+    this._userRating = film.userRating;
+    this._comments = film.comments;
+    this._premiere = film.premiere;
+    this._isFavorite = film.isFavorite;
+    this._isViewed = film.isViewed;
+    this._isGoingToWatch = film.isGoingToWatch;
     this._hasControls = true;
 
     this._element = null;
     this._onComments = null;
+    this._onWatchList = null;
+    this._onWatched = null;
+    this._onFavorite = null;
+
     this._onCommentsClick = this._onCommentsClick.bind(this);
+    this._onAddToWatchList = this._onAddToWatchList.bind(this);
+    this._onMarkAsWatched = this._onMarkAsWatched.bind(this);
+    this._onAddToFavorite = this._onAddToFavorite.bind(this);
   }
 
   /**
@@ -46,14 +53,38 @@ export default class Film extends Component {
    */
   _getControlsTemplate() {
     return `<form class="film-card__controls">
-            <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist"><!--Add to watchlist--> WL</button>
-            <button class="film-card__controls-item button film-card__controls-item--mark-as-watched"><!--Mark as watched-->WTCHD</button>
-            <button class="film-card__controls-item button film-card__controls-item--favorite"><!--Mark as favorite-->FAV</button>
+            <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" style="border: ${this._isGoingToWatch ? `1px solid white` : `0 none`}"><!--Add to watchlist--> WL</button>
+            <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" style="border: ${this._isViewed ? `1px solid white` : `0 none`}"><!--Mark as watched-->WTCHD</button>
+            <button class="film-card__controls-item button film-card__controls-item--favorite" style="border: ${this._isFavorite ? `1px solid white` : `0 none`}"><!--Mark as favorite-->FAV</button>
           </form>`;
   }
 
   /**
-   * Method for check for function and if yes to white it in this._onComments
+   * Method for check for function and if yes to write it in this._onFavorite
+   * @param {Event} evt
+   * @private
+   */
+  _onAddToFavorite(evt) {
+    evt.preventDefault();
+    if (typeof this._onFavorite === `function`) {
+      this._onFavorite();
+    }
+  }
+
+  /**
+   * Method for check for function and if yes to write it in this._onWatchList
+   * @param {Event} evt
+   * @private
+   */
+  _onAddToWatchList(evt) {
+    evt.preventDefault();
+    if (typeof this._onWatchList === `function`) {
+      this._onWatchList();
+    }
+  }
+
+  /**
+   * Method for check for function and if yes to write it in this._onComments
    * @private
    */
   _onCommentsClick() {
@@ -63,11 +94,43 @@ export default class Film extends Component {
   }
 
   /**
+   * Method for check for function and if yes to write it in this._onWatched
+   * @param {Event} evt
+   * @private
+   */
+  _onMarkAsWatched(evt) {
+    evt.preventDefault();
+    if (typeof this._onWatched === `function`) {
+      this._onWatched();
+    }
+  }
+
+  /**
    * Method for update template
    * @private
    */
   _updateTemplate() {
     this._element.querySelector(`.film-card__comments`).innerHTML = this._getCommentsTemplate();
+
+    this._element.querySelector(`.film-card__controls-item--add-to-watchlist`).style.border = this._isGoingToWatch ? `1px solid white` : `0 none`;
+    this._element.querySelector(`.film-card__controls-item--mark-as-watched`).style.border = this._isViewed ? `1px solid white` : `0 none`;
+    this._element.querySelector(`.film-card__controls-item--favorite`).style.border = this._isFavorite ? `1px solid white` : `0 none`;
+  }
+
+  /**
+   * Setter for function that will be work on 'Add to favorite' button
+   * @param {Function} fn
+   */
+  set onAddToFavorite(fn) {
+    this._onFavorite = fn;
+  }
+
+  /**
+   * Setter for function that will be work on 'Add to watch list' button
+   * @param {Function} fn
+   */
+  set onAddToWatchList(fn) {
+    this._onWatchList = fn;
   }
 
   /**
@@ -76,6 +139,14 @@ export default class Film extends Component {
    */
   set onCommentsClick(fn) {
     this._onComments = fn;
+  }
+
+  /**
+   * Setter for function that will be work on 'Add to watched' button
+   * @param {Function} fn
+   */
+  set onMarkAsWatched(fn) {
+    this._onWatched = fn;
   }
 
   /**
@@ -98,26 +169,32 @@ export default class Film extends Component {
         </article>`;
   }
 
-  /** Method for bing function to comments */
+  /** Method for bing functions to task */
   bind() {
     this._element.querySelector(`.film-card__comments`).addEventListener(`click`, this._onCommentsClick);
+    this._element.querySelector(`.film-card__controls-item--add-to-watchlist`).addEventListener(`click`, this._onAddToWatchList);
+    this._element.querySelector(`.film-card__controls-item--mark-as-watched`).addEventListener(`click`, this._onMarkAsWatched);
+    this._element.querySelector(`.film-card__controls-item--favorite`).addEventListener(`click`, this._onAddToFavorite);
   }
 
-  /** Method for unbing function from comments */
+  /** Method for unbing function from task */
   unbind() {
     this._element.querySelector(`.film-card__comments`).removeEventListener(`submit`, this._onCommentsClick);
+    this._element.querySelector(`.film-card__controls-item--add-to-watchlist`).removeEventListener(`click`, this._onAddToWatchList);
+    this._element.querySelector(`.film-card__controls-item--mark-as-watched`).removeEventListener(`click`, this._onMarkAsWatched);
+    this._element.querySelector(`.film-card__controls-item--favorite`).removeEventListener(`click`, this._onAddToFavorite);
   }
 
   /**
    * Method for update film regarding new data
-   * @param {Object} data
+   * @param {Object} film
    */
-  update(data) {
-    this._userRating = data.userRating;
-    this._comments = data.comments;
-    this._isFavorite = data.isFavorite;
-    this._isViewed = data.isViewed;
-    this._isGoingToWatch = data.isGoingToWatch;
+  update(film) {
+    this._userRating = film.userRating;
+    this._comments = film.comments;
+    this._isFavorite = film.isFavorite;
+    this._isViewed = film.isViewed;
+    this._isGoingToWatch = film.isGoingToWatch;
     this._updateTemplate();
   }
 }
