@@ -156,7 +156,6 @@ const checkLoadMoreButton = (films) => {
 const renderFilters = (container, filters, films) => {
   container.innerHTML = ``;
   const fragment = document.createDocumentFragment();
-  const statisticComponent = new Statistic(films);
 
   filters.forEach((filter) => {
     const filterComponent = new Filter(filter);
@@ -164,27 +163,48 @@ const renderFilters = (container, filters, films) => {
     filterComponent.onFilter = () => {
       const filterName = filterComponent.filterId;
 
+      filters = updateActiveFilter(filter, filters);
+      filter.isActive = true;
+      filterComponent.update(filter);
+
       if (filterName === `stats`) {
+        showStatistic(films);
         filmsWrapper.classList.add(HIDDEN_CLASS);
-        main.appendChild(statisticComponent.render());
       } else {
         filmsWrapper.classList.remove(HIDDEN_CLASS);
+        hideStatistic();
 
         const filteredFilms = filterFilms(films, filterName);
-        filters = updateActiveFilter(filter, filters);
-        filter.isActive = true;
-        filterComponent.update(filter);
 
         checkLoadMoreButton(filteredFilms);
         renderFilms(filmsContainer, filteredFilms);
-        renderFilters(container, filters, films);
       }
+
+      renderFilters(container, filters, films);
     };
 
     fragment.appendChild(filterComponent.render());
   });
 
   container.appendChild(fragment);
+};
+
+
+/**
+ * Function for show statistic
+ * @param {Object[]} films
+ */
+const showStatistic = (films) => {
+  const statisticComponent = new Statistic(films);
+  main.appendChild(statisticComponent.render());
+};
+
+
+/** Function for hide statistic */
+const hideStatistic = () => {
+  if (document.querySelector(`.statistic`)) {
+    main.removeChild(document.querySelector(`.statistic`));
+  }
 };
 
 
