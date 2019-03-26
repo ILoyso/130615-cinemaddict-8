@@ -15,6 +15,7 @@ const filmsWrapper = document.querySelector(`.films`);
 const filtersContainer = document.querySelector(`.main-navigation`);
 const filmsContainer = document.querySelector(`.films-list .films-list__container`);
 const filmsTopContainers = document.querySelectorAll(`.films-list--extra .films-list__container`);
+const showMoreButton = document.querySelector(`.films-list__show-more`);
 
 
 /**
@@ -132,6 +133,20 @@ const updateActiveFilter = (activeFilter, filters) => {
   return filters;
 };
 
+
+/**
+ * Function for check should 'Show more' button be visible or no
+ * @param {Object[]} films
+ */
+const checkLoadMoreButton = (films) => {
+  if (films.length === 0) {
+    showMoreButton.classList.add(HIDDEN_CLASS);
+  } else {
+    showMoreButton.classList.remove(HIDDEN_CLASS);
+  }
+};
+
+
 /**
  * Function for render filters
  * @param {Node} container
@@ -160,6 +175,7 @@ const renderFilters = (container, filters, films) => {
         filter.isActive = true;
         filterComponent.update(filter);
 
+        checkLoadMoreButton(filteredFilms);
         renderFilms(filmsContainer, filteredFilms);
         renderFilters(container, filters, films);
       }
