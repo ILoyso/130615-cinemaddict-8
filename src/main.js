@@ -10,11 +10,11 @@ const MAX_NUMBER_OF_FILMS = 7;
 const NUMBER_OF_TOP_FILMS = 2;
 
 const body = document.querySelector(`body`);
+const main = document.querySelector(`.main`);
 const filmsWrapper = document.querySelector(`.films`);
 const filtersContainer = document.querySelector(`.main-navigation__nav`);
 const filmsContainer = document.querySelector(`.films-list .films-list__container`);
 const filmsTopContainers = document.querySelectorAll(`.films-list--extra .films-list__container`);
-const statisticContainer = document.querySelector(`.statistic`);
 const statisticButton = document.querySelector(`.main-navigation__item--additional`);
 
 
@@ -166,10 +166,9 @@ const renderFilters = (container, filters, films) => {
 
 /** Function for hide films and show statistic */
 const showStatistic = () => {
-  statisticContainer.innerHTML = ``;
   filmsWrapper.classList.add(HIDDEN_CLASS);
   const statisticComponent = new Statistic(filmsData);
-  statisticContainer.appendChild(statisticComponent.render());
+  main.appendChild(statisticComponent.render());
 };
 
 renderFilms(filmsContainer, filmsData);

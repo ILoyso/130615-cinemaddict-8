@@ -201,7 +201,7 @@ export default class Statistic extends Component {
    * @return {string}
    */
   get template() {
-    return `<div>
+    return `<section class="statistic">
       <p class="statistic__rank">Your rank <span class="statistic__rank-label">Sci-Fighter</span></p>
     
       <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -242,7 +242,7 @@ export default class Statistic extends Component {
         <canvas class="statistic__chart" width="1000"></canvas>
       </div>
     
-    </div>`;
+    </section>`;
   }
 
   /** Method for bing functions to statistic */
