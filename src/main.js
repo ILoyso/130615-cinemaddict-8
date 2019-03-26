@@ -12,10 +12,9 @@ const NUMBER_OF_TOP_FILMS = 2;
 const body = document.querySelector(`body`);
 const main = document.querySelector(`.main`);
 const filmsWrapper = document.querySelector(`.films`);
-const filtersContainer = document.querySelector(`.main-navigation__nav`);
+const filtersContainer = document.querySelector(`.main-navigation`);
 const filmsContainer = document.querySelector(`.films-list .films-list__container`);
 const filmsTopContainers = document.querySelectorAll(`.films-list--extra .films-list__container`);
-const statisticButton = document.querySelector(`.main-navigation__item--additional`);
 
 
 /**
@@ -90,9 +89,9 @@ const renderTopFilms = (containers, films) => {
 
 /**
  * Function for filter films
- * @param {Object} films
+ * @param {Object[]} films
  * @param {String} filterName
- * @return {Object}
+ * @return {Object[]}
  */
 const filterFilms = (films, filterName) => {
   let filteredFilms = films;
@@ -137,24 +136,33 @@ const updateActiveFilter = (activeFilter, filters) => {
  * Function for render filters
  * @param {Node} container
  * @param {Object} filters
- * @param {Object} films
+ * @param {Object[]} films
  */
 const renderFilters = (container, filters, films) => {
   container.innerHTML = ``;
   const fragment = document.createDocumentFragment();
+  const statisticComponent = new Statistic(films);
 
   filters.forEach((filter) => {
     const filterComponent = new Filter(filter);
 
     filterComponent.onFilter = () => {
       const filterName = filterComponent.filterId;
-      const filteredFilms = filterFilms(films, filterName);
-      filters = updateActiveFilter(filter, filters);
-      filter.isActive = true;
-      filterComponent.update(filter);
 
-      renderFilms(filmsContainer, filteredFilms);
-      renderFilters(container, filters, films);
+      if (filterName === `stats`) {
+        filmsWrapper.classList.add(HIDDEN_CLASS);
+        main.appendChild(statisticComponent.render());
+      } else {
+        filmsWrapper.classList.remove(HIDDEN_CLASS);
+
+        const filteredFilms = filterFilms(films, filterName);
+        filters = updateActiveFilter(filter, filters);
+        filter.isActive = true;
+        filterComponent.update(filter);
+
+        renderFilms(filmsContainer, filteredFilms);
+        renderFilters(container, filters, films);
+      }
     };
 
     fragment.appendChild(filterComponent.render());
@@ -164,15 +172,6 @@ const renderFilters = (container, filters, films) => {
 };
 
 
-/** Function for hide films and show statistic */
-const showStatistic = () => {
-  filmsWrapper.classList.add(HIDDEN_CLASS);
-  const statisticComponent = new Statistic(filmsData);
-  main.appendChild(statisticComponent.render());
-};
-
 renderFilms(filmsContainer, filmsData);
 renderTopFilms(filmsTopContainers, topFilmsData);
 renderFilters(filtersContainer, filtersData, filmsData);
-
-statisticButton.addEventListener(`click`, showStatistic);

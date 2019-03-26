@@ -11,5 +11,9 @@ export default [
   },
   {
     name: `Favorites`
+  },
+  {
+    name: `Stats`,
+    isAdditional: true
   }
 ];
