@@ -1,13 +1,11 @@
 import filtersData from './get-filters';
-import generateFilms from './generate-films';
 import Film from './film';
 import FilmPopup from './film-popup';
 import Filter from './filter';
 import Statistic from './statistic';
+import API from './api';
 
 const HIDDEN_CLASS = `visually-hidden`;
-const MAX_NUMBER_OF_FILMS = 7;
-const NUMBER_OF_TOP_FILMS = 2;
 
 const body = document.querySelector(`body`);
 const main = document.querySelector(`.main`);
@@ -16,17 +14,20 @@ const filtersContainer = document.querySelector(`.main-navigation`);
 const filmsContainer = document.querySelector(`.films-list .films-list__container`);
 const filmsTopContainers = document.querySelectorAll(`.films-list--extra .films-list__container`);
 const showMoreButton = document.querySelector(`.films-list__show-more`);
+const loadingContainer = document.querySelector(`.films-list__title`);
+
+const AUTHORIZATION = `Basic l76oy54048so925dfdfd0`;
+const END_POINT = `https://es8-demo-srv.appspot.com/moowle/`;
 
 
 /**
- * Function for generate array with films data
- * @param {Number} amount
- * @return {Object[]}
+ * Create new api for working with server
+ * @type {API}
  */
-const generateFilmsData = (amount) => generateFilms(amount);
-
-const filmsData = generateFilmsData(MAX_NUMBER_OF_FILMS);
-const topFilmsData = generateFilmsData(NUMBER_OF_TOP_FILMS);
+const api = new API({
+  endPoint: END_POINT,
+  authorization: AUTHORIZATION
+});
 
 
 /**
@@ -42,27 +43,75 @@ const renderFilms = (container, films) => {
     const filmComponent = new Film(film);
 
     filmComponent.onAddToWatchList = () => {
-      film.isGoingToWatch = !film.isGoingToWatch;
-      filmComponent.update(film);
+      film.userInfo.isGoingToWatch = !film.userInfo.isGoingToWatch;
+
+      api.updateFilm({id: film.id, data: film.toRAW()})
+        .then((newFilm) => {
+          filmComponent.update(newFilm);
+        });
     };
 
     filmComponent.onAddToFavorite = () => {
-      film.isFavorite = !film.isFavorite;
-      filmComponent.update(film);
+      film.userInfo.isFavorite = !film.userInfo.isFavorite;
+
+      api.updateFilm({id: film.id, data: film.toRAW()})
+        .then((newFilm) => {
+          filmComponent.update(newFilm);
+        });
     };
 
     filmComponent.onMarkAsWatched = () => {
-      film.isViewed = !film.isViewed;
-      filmComponent.update(film);
+      film.userInfo.isViewed = !film.userInfo.isViewed;
+
+      api.updateFilm({id: film.id, data: film.toRAW()})
+        .then((newFilm) => {
+          filmComponent.update(newFilm);
+        });
     };
 
     filmComponent.onCommentsClick = () => {
       const filmPopupComponent = new FilmPopup(film);
 
+      filmPopupComponent.onComment = (newComment) => {
+        film.comments.push(newComment);
+
+        api.updateFilm({id: film.id, data: film.toRAW()})
+          .then((newFilm) => {
+            filmPopupComponent.unblockComments();
+            filmPopupComponent.updateComments(newFilm);
+          })
+          .catch(() => {
+            filmPopupComponent.shake();
+            filmPopupComponent.errorComments();
+          });
+      };
+
+      filmPopupComponent.onRatingClick = (newRating) => {
+        film.userInfo.rating = newRating;
+
+        api.updateFilm({id: film.id, data: film.toRAW()})
+          .then((newFilm) => {
+            filmPopupComponent.unblockRating();
+            filmPopupComponent.updateRating(newFilm);
+          })
+          .catch(() => {
+            filmPopupComponent.shake();
+            filmPopupComponent.errorRating();
+          });
+      };
+
       filmPopupComponent.onClose = (updatedFilm) => {
-        filmComponent.update(Object.assign(film, updatedFilm));
-        body.removeChild(filmPopupComponent.element);
-        filmPopupComponent.unrender();
+        film = Object.assign(film, updatedFilm);
+
+        api.updateFilm({id: film.id, data: film.toRAW()})
+          .then((newFilm) => {
+            filmComponent.update(newFilm);
+            body.removeChild(filmPopupComponent.element);
+            filmPopupComponent.unrender();
+          })
+          .catch(() => {
+            filmPopupComponent.shake();
+          });
       };
 
       filmPopupComponent.render();
@@ -102,13 +151,13 @@ const filterFilms = (films, filterName) => {
       filteredFilms = films;
       break;
     case `watchlist`:
-      filteredFilms = films.filter((it) => it.isGoingToWatch);
+      filteredFilms = films.filter((it) => it.userInfo.isGoingToWatch);
       break;
     case `history`:
-      filteredFilms = films.filter((it) => it.isViewed);
+      filteredFilms = films.filter((it) => it.userInfo.isViewed);
       break;
     case `favorites`:
-      filteredFilms = films.filter((it) => it.isFavorite);
+      filteredFilms = films.filter((it) => it.userInfo.isFavorite);
       break;
   }
 
@@ -208,6 +257,32 @@ const hideStatistic = () => {
 };
 
 
-renderFilms(filmsContainer, filmsData);
-renderTopFilms(filmsTopContainers, topFilmsData);
-renderFilters(filtersContainer, filtersData, filmsData);
+/**
+ * Function for show loader
+ * @param {String} text
+ */
+const showLoader = (text = `Loading movies...`) => {
+  loadingContainer.textContent = text;
+  loadingContainer.classList.remove(HIDDEN_CLASS);
+};
+
+
+/** Function for hide loader */
+const hideLoader = () => {
+  loadingContainer.textContent = `Loading movies...`;
+  loadingContainer.classList.add(HIDDEN_CLASS);
+};
+
+
+showLoader();
+
+api.getFilms()
+  .then((films) => {
+    hideLoader();
+    renderFilms(filmsContainer, films);
+    renderTopFilms(filmsTopContainers, films);
+    renderFilters(filtersContainer, filtersData, films);
+  })
+  .catch(() => {
+    showLoader(`Something went wrong while loading movies. Check your connection or try again later`);
+  });

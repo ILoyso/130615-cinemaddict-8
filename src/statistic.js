@@ -16,7 +16,7 @@ export default class Statistic extends Component {
     super();
 
     this._films = films;
-    this._watchedFilms = this._films.filter((film) => film.isViewed);
+    this._watchedFilms = this._films.filter((film) => film.userInfo.isViewed);
     this._filteringFilms = this._watchedFilms;
     this._chart = null;
 
@@ -36,16 +36,16 @@ export default class Statistic extends Component {
         this._filteringFilms = this._watchedFilms;
         break;
       case `today`:
-        this._filteringFilms = this._watchedFilms.filter((film) => moment(film.userRating.date).format(`D MMMM YYYY`) === moment().format(`D MMMM YYYY`));
+        this._filteringFilms = this._watchedFilms.filter((film) => moment(film.userInfo.date).format(`D MMMM YYYY`) === moment().format(`D MMMM YYYY`));
         break;
       case `week`:
-        this._filteringFilms = this._watchedFilms.filter((film) => moment(film.userRating.date) > moment().subtract(1, `w`));
+        this._filteringFilms = this._watchedFilms.filter((film) => moment(film.userInfo.date) > moment().subtract(1, `w`));
         break;
       case `month`:
-        this._filteringFilms = this._watchedFilms.filter((film) => moment(film.userRating.date) > moment().subtract(1, `months`));
+        this._filteringFilms = this._watchedFilms.filter((film) => moment(film.userInfo.date) > moment().subtract(1, `months`));
         break;
       case `year`:
-        this._filteringFilms = this._watchedFilms.filter((film) => moment(film.userRating.date) > moment().subtract(1, `y`));
+        this._filteringFilms = this._watchedFilms.filter((film) => moment(film.userInfo.date) > moment().subtract(1, `y`));
         break;
     }
 
@@ -61,7 +61,7 @@ export default class Statistic extends Component {
     let filteredFilms = {};
 
     this._filteringFilms.forEach((film) => {
-      film.genres.map((genre) => {
+      Array.from(film.filmInfo.genres).map((genre) => {
         filteredFilms[genre] = isNumeric(filteredFilms[genre]) ? filteredFilms[genre] + 1 : 1;
       });
     });
@@ -158,7 +158,7 @@ export default class Statistic extends Component {
    * @private
    */
   _getFilmsDurationTemplate() {
-    const totalDuration = this._filteringFilms.reduce((duration, film) => duration + film.duration, 0);
+    const totalDuration = this._filteringFilms.reduce((duration, film) => duration + film.filmInfo.duration, 0);
     return `${moment.duration(totalDuration).hours()} <span class="statistic__item-description">h</span> ${moment.duration(totalDuration).minutes()} <span class="statistic__item-description">m</span>`;
   }
 
