@@ -4,6 +4,8 @@ import FilmPopup from './film-popup';
 import Filter from './filter';
 import Statistic from './statistic';
 import API from './api';
+import Provider from './provider';
+import Store from './store';
 
 const HIDDEN_CLASS = `visually-hidden`;
 
@@ -18,15 +20,35 @@ const loadingContainer = document.querySelector(`.films-list__title`);
 
 const AUTHORIZATION = `Basic l76oy54048so925dfdfd0`;
 const END_POINT = `https://es8-demo-srv.appspot.com/moowle/`;
+const FILMS_STORE_KEY = `films-store-key`;
 
 
 /**
  * Create new api for working with server
  * @type {API}
  */
-const api = new API({
-  endPoint: END_POINT,
-  authorization: AUTHORIZATION
+const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
+
+/**
+ * Create a store for working with localStorage
+ * @type {Store}
+ */
+const store = new Store({key: FILMS_STORE_KEY, storage: localStorage});
+
+/**
+ * Create a Provider for synchronize working api and store
+ * @type {Provider}
+ */
+const provider = new Provider({api, store});
+
+
+window.addEventListener(`offline`, () => {
+  document.title = `${document.title}[OFFLINE]`;
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.split(`[OFFLINE]`)[0];
+  provider.syncFilms();
 });
 
 
@@ -45,7 +67,7 @@ const renderFilms = (container, films) => {
     filmComponent.onAddToWatchList = () => {
       film.userInfo.isGoingToWatch = !film.userInfo.isGoingToWatch;
 
-      api.updateFilm({id: film.id, data: film.toRAW()})
+      provider.updateFilm({id: film.id, data: film.toRAW()})
         .then((newFilm) => {
           filmComponent.update(newFilm);
         });
@@ -54,7 +76,7 @@ const renderFilms = (container, films) => {
     filmComponent.onAddToFavorite = () => {
       film.userInfo.isFavorite = !film.userInfo.isFavorite;
 
-      api.updateFilm({id: film.id, data: film.toRAW()})
+      provider.updateFilm({id: film.id, data: film.toRAW()})
         .then((newFilm) => {
           filmComponent.update(newFilm);
         });
@@ -63,7 +85,7 @@ const renderFilms = (container, films) => {
     filmComponent.onMarkAsWatched = () => {
       film.userInfo.isViewed = !film.userInfo.isViewed;
 
-      api.updateFilm({id: film.id, data: film.toRAW()})
+      provider.updateFilm({id: film.id, data: film.toRAW()})
         .then((newFilm) => {
           filmComponent.update(newFilm);
         });
@@ -75,7 +97,7 @@ const renderFilms = (container, films) => {
       filmPopupComponent.onComment = (newComment) => {
         film.comments.push(newComment);
 
-        api.updateFilm({id: film.id, data: film.toRAW()})
+        provider.updateFilm({id: film.id, data: film.toRAW()})
           .then((newFilm) => {
             filmPopupComponent.unblockComments();
             filmPopupComponent.updateComments(newFilm);
@@ -89,7 +111,7 @@ const renderFilms = (container, films) => {
       filmPopupComponent.onRatingClick = (newRating) => {
         film.userInfo.rating = newRating;
 
-        api.updateFilm({id: film.id, data: film.toRAW()})
+        provider.updateFilm({id: film.id, data: film.toRAW()})
           .then((newFilm) => {
             filmPopupComponent.unblockRating();
             filmPopupComponent.updateRating(newFilm);
@@ -103,7 +125,7 @@ const renderFilms = (container, films) => {
       filmPopupComponent.onClose = (updatedFilm) => {
         film = Object.assign(film, updatedFilm);
 
-        api.updateFilm({id: film.id, data: film.toRAW()})
+        provider.updateFilm({id: film.id, data: film.toRAW()})
           .then((newFilm) => {
             filmComponent.update(newFilm);
             body.removeChild(filmPopupComponent.element);
@@ -276,7 +298,7 @@ const hideLoader = () => {
 
 showLoader();
 
-api.getFilms()
+provider.getFilms()
   .then((films) => {
     hideLoader();
     renderFilms(filmsContainer, films);

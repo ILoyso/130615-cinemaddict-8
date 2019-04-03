@@ -59,9 +59,24 @@ export default class API {
   }
 
   /**
+   * Method for sync data between server and localstorage
+   * @param {Object[]} films
+   * @return {Promise<Response | never>}
+   */
+  syncFilms(films) {
+    return this._load({
+      url: `movies/sync`,
+      method: Method.POST,
+      body: JSON.stringify(films),
+      headers: new Headers({'Content-Type': `application/json`})
+    })
+      .then(toJSON);
+  }
+
+  /**
    * Method for update film on server
    * @param {Number} id
-   * @param {Object} film
+   * @param {Object} data
    * @return {Promise<Response>}
    */
   updateFilm({id, data}) {
