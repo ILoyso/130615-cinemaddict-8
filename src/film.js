@@ -11,20 +11,27 @@ export default class Film extends Component {
   constructor(film) {
     super();
 
-    this._title = film.title;
-    this._poster = film.poster;
-    this._description = film.description;
-    this._duration = film.duration;
-    this._genres = film.genres;
-    this._rating = film.rating;
-    this._userRating = film.userRating;
+    this._id = film.id;
+    this._filmInfo = {
+      title: film.filmInfo.title,
+      originalTitle: film.filmInfo.originalTitle,
+      description: film.filmInfo.description,
+      poster: film.filmInfo.poster,
+      duration: film.filmInfo.duration,
+      genres: film.filmInfo.genres,
+      premiere: film.filmInfo.premiere,
+      rating: film.filmInfo.rating
+    };
+    this._userInfo = {
+      isFavorite: film.userInfo.isFavorite,
+      isViewed: film.userInfo.isViewed,
+      isGoingToWatch: film.userInfo.isGoingToWatch,
+      rating: film.userInfo.rating,
+      date: film.userInfo.date
+    };
     this._comments = film.comments;
-    this._premiere = film.premiere;
-    this._isFavorite = film.isFavorite;
-    this._isViewed = film.isViewed;
-    this._isGoingToWatch = film.isGoingToWatch;
-    this._hasControls = true;
 
+    this._hasControls = true;
     this._element = null;
     this._onComments = null;
     this._onWatchList = null;
@@ -53,9 +60,9 @@ export default class Film extends Component {
    */
   _getControlsTemplate() {
     return `<form class="film-card__controls">
-            <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" style="border: ${this._isGoingToWatch ? `1px solid white` : `0 none`}"><!--Add to watchlist--> WL</button>
-            <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" style="border: ${this._isViewed ? `1px solid white` : `0 none`}"><!--Mark as watched-->WTCHD</button>
-            <button class="film-card__controls-item button film-card__controls-item--favorite" style="border: ${this._isFavorite ? `1px solid white` : `0 none`}"><!--Mark as favorite-->FAV</button>
+            <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" style="border: ${this._userInfo.isGoingToWatch ? `1px solid white` : `0 none`}"><!--Add to watchlist--> WL</button>
+            <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" style="border: ${this._userInfo.isViewed ? `1px solid white` : `0 none`}"><!--Mark as watched-->WTCHD</button>
+            <button class="film-card__controls-item button film-card__controls-item--favorite" style="border: ${this._userInfo.isFavorite ? `1px solid white` : `0 none`}"><!--Mark as favorite-->FAV</button>
           </form>`;
   }
 
@@ -112,9 +119,9 @@ export default class Film extends Component {
   _updateTemplate() {
     this._element.querySelector(`.film-card__comments`).innerHTML = this._getCommentsTemplate();
 
-    this._element.querySelector(`.film-card__controls-item--add-to-watchlist`).style.border = this._isGoingToWatch ? `1px solid white` : `0 none`;
-    this._element.querySelector(`.film-card__controls-item--mark-as-watched`).style.border = this._isViewed ? `1px solid white` : `0 none`;
-    this._element.querySelector(`.film-card__controls-item--favorite`).style.border = this._isFavorite ? `1px solid white` : `0 none`;
+    this._element.querySelector(`.film-card__controls-item--add-to-watchlist`).style.border = this._userInfo.isGoingToWatch ? `1px solid white` : `0 none`;
+    this._element.querySelector(`.film-card__controls-item--mark-as-watched`).style.border = this._userInfo.isViewed ? `1px solid white` : `0 none`;
+    this._element.querySelector(`.film-card__controls-item--favorite`).style.border = this._userInfo.isFavorite ? `1px solid white` : `0 none`;
   }
 
   /**
@@ -155,15 +162,15 @@ export default class Film extends Component {
    */
   get template() {
     return `<article class="film-card ${this._hasControls ? `` : `film-card--no-controls`}">
-          <h3 class="film-card__title">${this._title}</h3>
-          <p class="film-card__rating">${this._rating}</p>
+          <h3 class="film-card__title">${this._filmInfo.title ? this._filmInfo.title : this._filmInfo.originalTitle}</h3>
+          <p class="film-card__rating">${this._filmInfo.rating}</p>
           <p class="film-card__info">
-            <span class="film-card__year">${moment(this._premiere).format(`YYYY`)}</span>
-            <span class="film-card__duration">${moment.duration(this._duration).hours()}h&nbsp;${moment.duration(this._duration).minutes()}m </span>
-            <span class="film-card__genre">${this._genres.join(`, `)}</span>
+            <span class="film-card__year">${moment(this._filmInfo.premiere).format(`YYYY`)}</span>
+            <span class="film-card__duration">${moment.duration(this._filmInfo.duration).hours()}h&nbsp;${moment.duration(this._filmInfo.duration).minutes()}m </span>
+            <span class="film-card__genre">${Array.from(this._filmInfo.genres).join(`, `)}</span>
           </p>
-          <img src="./images/posters/${this._poster}.jpg" alt="" class="film-card__poster">
-          <p class="film-card__description">${this._description}</p>
+          <img src="./images/posters/${this._filmInfo.poster}.jpg" alt="" class="film-card__poster">
+          <p class="film-card__description">${this._filmInfo.description}</p>
           <button class="film-card__comments">${this._getCommentsTemplate()}</button>
           ${this._hasControls ? this._getControlsTemplate() : ``}
         </article>`;
@@ -190,11 +197,13 @@ export default class Film extends Component {
    * @param {Object} film
    */
   update(film) {
-    this._userRating = film.userRating;
+    this._userInfo = {
+      userRating: film.userInfo.userRating,
+      isFavorite: film.userInfo.isFavorite,
+      isViewed: film.userInfo.isViewed,
+      isGoingToWatch: film.userInfo.isGoingToWatch
+    };
     this._comments = film.comments;
-    this._isFavorite = film.isFavorite;
-    this._isViewed = film.isViewed;
-    this._isGoingToWatch = film.isGoingToWatch;
     this._updateTemplate();
   }
 }

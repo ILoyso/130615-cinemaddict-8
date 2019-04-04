@@ -12,25 +12,35 @@ export default class FilmPopup extends Component {
   constructor(film) {
     super();
 
-    this._title = film.title;
-    this._originalTitle = film.originalTitle;
-    this._poster = film.poster;
-    this._actors = film.actors;
-    this._description = film.description;
-    this._duration = film.duration;
-    this._genres = film.genres;
-    this._restrictions = film.restrictions;
-    this._premiere = film.premiere;
-    this._userRating = film.userRating;
-    this._rating = film.rating;
-    this._country = film.country;
+    this._id = film.id;
+    this._filmInfo = {
+      title: film.filmInfo.title,
+      description: film.filmInfo.description,
+      poster: film.filmInfo.poster,
+      duration: film.filmInfo.duration,
+      genres: film.filmInfo.genres,
+      premiere: film.filmInfo.premiere,
+      rating: film.filmInfo.rating,
+      originalTitle: film.filmInfo.originalTitle,
+      actors: film.filmInfo.actors,
+      restrictions: film.filmInfo.restrictions,
+      country: film.filmInfo.country,
+      director: film.filmInfo.director,
+      writers: film.filmInfo.writers,
+    };
+    this._userInfo = {
+      isFavorite: film.userInfo.isFavorite,
+      isViewed: film.userInfo.isViewed,
+      isGoingToWatch: film.userInfo.isGoingToWatch,
+      rating: film.userInfo.rating,
+    };
+
     this._comments = film.comments;
-    this._isFavorite = film.isFavorite;
-    this._isViewed = film.isViewed;
-    this._isGoingToWatch = film.isGoingToWatch;
 
     this._element = null;
     this._onClose = null;
+    this._onComment = null;
+    this._onRatingClick = null;
     this._onCloseButtonClick = this._onCloseButtonClick.bind(this);
     this._onChangeEmoji = this._onChangeEmoji.bind(this);
     this._onAddComment = this._onAddComment.bind(this);
@@ -61,7 +71,7 @@ export default class FilmPopup extends Component {
    * @private
    */
   _getGenresTemplate() {
-    return this._genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join(``);
+    return Array.from(this._filmInfo.genres).map((genre) => `<span class="film-details__genre">${genre}</span>`).join(``);
   }
 
   /**
@@ -73,7 +83,7 @@ export default class FilmPopup extends Component {
     let ratingTemplate = ``;
 
     for (let i = 1; i <= MAX_FILM_RATING; i++) {
-      ratingTemplate += `<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${i}" id="rating-${i}" ${this._userRating.rating === i ? `checked` : ``}>
+      ratingTemplate += `<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${i}" id="rating-${i}" ${this._userInfo.rating === i ? `checked` : ``}>
                 <label class="film-details__user-rating-label" for="rating-${i}">${i}</label>`;
     }
 
@@ -86,20 +96,22 @@ export default class FilmPopup extends Component {
    * @private
    */
   _onAddComment(evt) {
+    this._element.querySelector(`.film-details__comment-input`).style.border = `1px solid #979797`;
+
     if ((evt.ctrlKey || evt.metaKey) && (evt.keyCode === ENTER_KEY_CODE)) {
       evt.preventDefault();
+      this.blockComments();
+
       const newComment = {};
       const textarea = this._element.querySelector(`.film-details__comment-input`);
       newComment.text = textarea.value;
       newComment.author = `Me`;
       newComment.emoji = this._element.querySelector(`.film-details__emoji-item:checked + label`).textContent;
-      newComment.date = moment();
+      newComment.date = moment().valueOf();
 
-      this._comments.push(newComment);
-
-      textarea.value = ``;
-      this._element.querySelector(`.film-details__add-emoji`).checked = false;
-      this._element.querySelector(`.film-details__comments-list`).innerHTML = this._getCommentsTemplate();
+      if (typeof this._onComment === `function`) {
+        this._onComment(newComment);
+      }
     }
   }
 
@@ -117,8 +129,12 @@ export default class FilmPopup extends Component {
    * @private
    */
   _onChangeRating() {
-    this._userRating.rating = this._element.querySelector(`.film-details__user-rating-input:checked`).value;
-    this._element.querySelector(`.film-details__user-rating span`).innerHTML = this._userRating.rating;
+    this.blockRating();
+    const newRating = this._element.querySelector(`.film-details__user-rating-input:checked`).value;
+
+    if (typeof this._onRatingClick === `function`) {
+      this._onRatingClick(newRating);
+    }
   }
 
   /**
@@ -144,11 +160,13 @@ export default class FilmPopup extends Component {
    */
   _processForm(formData) {
     const entry = {
-      userRating: this._userRating,
-      comments: this._comments,
-      isFavorite: false,
-      isViewed: false,
-      isGoingToWatch: false
+      userInfo: {
+        rating: this._userInfo.rating,
+        isFavorite: false,
+        isViewed: false,
+        isGoingToWatch: false,
+      },
+      comments: this._comments
     };
 
     const filmPopupMapper = FilmPopup.createMapper(entry);
@@ -172,6 +190,22 @@ export default class FilmPopup extends Component {
   }
 
   /**
+   * Setter for function that will be work on add new comment
+   * @param {Function} fn
+   */
+  set onComment(fn) {
+    this._onComment = fn;
+  }
+
+  /**
+   * Setter for function that will be work on change rating
+   * @param {Function} fn
+   */
+  set onRatingClick(fn) {
+    this._onRatingClick = fn;
+  }
+
+  /**
    * Getter for popup template
    * @return {string}
    */
@@ -183,48 +217,48 @@ export default class FilmPopup extends Component {
         </div>
         <div class="film-details__info-wrap">
           <div class="film-details__poster">
-            <img class="film-details__poster-img" src="images/posters/${this._poster}.jpg" alt="${this._originalTitle}">
+            <img class="film-details__poster-img" src="images/posters/${this._filmInfo.poster}.jpg" alt="${this._filmInfo.originalTitle}">
     
-            <p class="film-details__age">${this._restrictions}+</p>
+            <p class="film-details__age">${this._filmInfo.restrictions}+</p>
           </div>
     
           <div class="film-details__info">
             <div class="film-details__info-head">
               <div class="film-details__title-wrap">
-                <h3 class="film-details__title">${this._title}</h3>
-                <p class="film-details__title-original">Original: ${this._originalTitle}</p>
+                <h3 class="film-details__title">${this._filmInfo.title}</h3>
+                <p class="film-details__title-original">Original: ${this._filmInfo.originalTitle}</p>
               </div>
     
               <div class="film-details__rating">
-                <p class="film-details__total-rating">${this._rating}</p>
-                <p class="film-details__user-rating">Your rate <span>${this._userRating.rating}</span></p>
+                <p class="film-details__total-rating">${this._filmInfo.rating}</p>
+                <p class="film-details__user-rating">Your rate <span>${this._userInfo.rating}</span></p>
               </div>
             </div>
     
             <table class="film-details__table">
               <tr class="film-details__row">
                 <td class="film-details__term">Director</td>
-                <td class="film-details__cell">Brad Bird</td>
+                <td class="film-details__cell">${this._filmInfo.director}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Writers</td>
-                <td class="film-details__cell">Brad Bird</td>
+                <td class="film-details__cell">${this._filmInfo.writers.join(`, `)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Actors</td>
-                <td class="film-details__cell">${this._actors.join(`, `)}</td>
+                <td class="film-details__cell">${this._filmInfo.actors.join(`, `)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${moment(this._premiere).format(`D MMMM YYYY`)} (${this._country})</td>
+                <td class="film-details__cell">${moment(this._filmInfo.premiere).format(`D MMMM YYYY`)} (${this._filmInfo.country})</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${Math.trunc(moment.duration(this._duration).asMinutes())} min</td>
+                <td class="film-details__cell">${Math.trunc(moment.duration(this._filmInfo.duration).asMinutes())} min</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
-                <td class="film-details__cell">${this._country}</td>
+                <td class="film-details__cell">${this._filmInfo.country}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Genres</td>
@@ -235,19 +269,19 @@ export default class FilmPopup extends Component {
             </table>
     
             <p class="film-details__film-description">
-              ${this._description}
+              ${this._filmInfo.description}
             </p>
           </div>
         </div>
     
         <section class="film-details__controls">
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${this._isGoingToWatch ? `checked` : ``}>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${this._userInfo.isGoingToWatch ? `checked` : ``}>
           <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
     
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${this._isViewed ? `checked` : ``}>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${this._userInfo.isViewed ? `checked` : ``}>
           <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
     
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${this._isFavorite ? `checked` : ``}>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${this._userInfo.isFavorite ? `checked` : ``}>
           <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
         </section>
     
@@ -282,17 +316,17 @@ export default class FilmPopup extends Component {
     
         <section class="film-details__user-rating-wrap">
           <div class="film-details__user-rating-controls">
-            <span class="film-details__watched-status ${this._isViewed ? `film-details__watched-status--active` : ``}">${this._isViewed ? `Already watched` : `not watched`}</span>
+            <span class="film-details__watched-status ${this._userInfo.isViewed ? `film-details__watched-status--active` : ``}">${this._userInfo.isViewed ? `Already watched` : `not watched`}</span>
             <button class="film-details__watched-reset" type="button">undo</button>
           </div>
     
           <div class="film-details__user-score">
             <div class="film-details__user-rating-poster">
-              <img src="images/posters/${this._poster}.jpg" alt="film-poster" class="film-details__user-rating-img">
+              <img src="images/posters/${this._filmInfo.poster}.jpg" alt="film-poster" class="film-details__user-rating-img">
             </div>
     
             <section class="film-details__user-rating-inner">
-              <h3 class="film-details__user-rating-title">${this._title}</h3>
+              <h3 class="film-details__user-rating-title">${this._filmInfo.title ? this._filmInfo.title : this._filmInfo.originalTitle}</h3>
     
               <p class="film-details__user-rating-feelings">How you feel it?</p>
     
@@ -321,6 +355,45 @@ export default class FilmPopup extends Component {
     });
   }
 
+  /** Method for block comments field */
+  blockComments() {
+    this._element.querySelectorAll(`.film-details__add-emoji`).disabled = true;
+    this._element.querySelectorAll(`.film-details__comment-input`).disabled = true;
+  }
+
+  /** Method for block rating field */
+  blockRating() {
+    this._element.querySelectorAll(`.film-details__user-rating-input`).forEach((element) => {
+      element.disabled = true;
+    });
+  }
+
+  /** Method for show error in comments block */
+  errorComments() {
+    this._element.querySelector(`.film-details__comment-input`).style.border = `3px solid red`;
+    this.unblockComments();
+  }
+
+  /** Method for show error in rating block */
+  errorRating() {
+    this._element.querySelectorAll(`.film-details__user-rating-label`).forEach((element) => {
+      element.style.background = `#d8d8d8`;
+    });
+    this._element.querySelector(`.film-details__user-rating-input:checked + label`).style.background = `red`;
+    this.unblockRating();
+  }
+
+  /** Method for show shake animation */
+  shake() {
+    const ANIMATION_TIMEOUT = 600;
+    this._element.querySelector(`.film-details__inner`).style.animation = `shake ${ANIMATION_TIMEOUT / 1000}s`;
+
+
+    setTimeout(() => {
+      this._element.querySelector(`.film-details__inner`).style.animation = ``;
+    }, ANIMATION_TIMEOUT);
+  }
+
   /** Method for unbing function from close button */
   unbind() {
     this._element.querySelector(`.film-details__close-btn`).removeEventListener(`click`, this._onCloseButtonClick);
@@ -336,16 +409,51 @@ export default class FilmPopup extends Component {
     });
   }
 
+  /** Method for unblock comments field */
+  unblockComments() {
+    this._element.querySelectorAll(`.film-details__add-emoji`).disabled = false;
+    this._element.querySelectorAll(`.film-details__comment-input`).disabled = false;
+  }
+
+  /** Method for unblock rating field */
+  unblockRating() {
+    this._element.querySelectorAll(`.film-details__user-rating-input`).forEach((element) => {
+      element.disabled = false;
+    });
+  }
+
   /**
    * Method for update popup regarding new data
    * @param {Object} film
    */
   update(film) {
-    this._userRating = film.userRating;
+    this._userInfo = {
+      userRating: film.userInfo.userRating,
+      isFavorite: film.userInfo.isFavorite,
+      isViewed: film.userInfo.isViewed,
+      isGoingToWatch: film.userInfo.isGoingToWatch
+    };
     this._comments = film.comments;
-    this._isFavorite = film.isFavorite;
-    this._isViewed = film.isViewed;
-    this._isGoingToWatch = film.isGoingToWatch;
+  }
+
+  /**
+   * Method for update comments after add a new one
+   * @param {Object} film
+   */
+  updateComments(film) {
+    this._comments = film.comments;
+    this._element.querySelector(`.film-details__add-emoji`).checked = false;
+    this._element.querySelector(`.film-details__comment-input`).value = ``;
+    this._element.querySelector(`.film-details__comments-list`).innerHTML = this._getCommentsTemplate();
+  }
+
+  /**
+   * Method for update rating after changing
+   * @param {Object} film
+   */
+  updateRating(film) {
+    this._userInfo.rating = film.userInfo.rating;
+    this._element.querySelector(`.film-details__user-rating span`).innerHTML = this._userInfo.rating;
   }
 
   /**
@@ -356,16 +464,16 @@ export default class FilmPopup extends Component {
   static createMapper(target) {
     return {
       score: (value) => {
-        target.userRating.rating = parseInt(value, 10);
+        target.userInfo.rating = parseInt(value, 10);
       },
       watchlist: (value) => {
-        target.isGoingToWatch = value === `on`;
+        target.userInfo.isGoingToWatch = value === `on`;
       },
       watched: (value) => {
-        target.isViewed = value === `on`;
+        target.userInfo.isViewed = value === `on`;
       },
       favorite: (value) => {
-        target.isFavorite = value === `on`;
+        target.userInfo.isFavorite = value === `on`;
       }
     };
   }
