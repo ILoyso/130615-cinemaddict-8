@@ -264,9 +264,29 @@ const renderFilters = (container, filters, films) => {
 };
 
 
-/** Function for rendering search */
-const renderSearch = () => {
+/**
+ * Function for searching film by title
+ * @param {Object[]} films
+ * @param {String} title
+ * @return {Object[]}
+ */
+const searchFilm = (films, title) => films.filter((film) => film.filmInfo.title.toLowerCase().indexOf(title.toLowerCase()) !== -1);
+
+
+/**
+ * Function for rendering search
+ * @param {Object[]} films
+ */
+const renderSearch = (films) => {
   const search = new Search();
+
+  search.onSearch = () => {
+    const filteredFilms = searchFilm(films, search.input.value);
+
+    checkLoadMoreButton(filteredFilms);
+    renderFilms(filmsContainer, filteredFilms);
+  };
+
   header.insertBefore(search.render(), profileContainer);
 };
 
@@ -311,7 +331,7 @@ showLoader();
 provider.getFilms()
   .then((films) => {
     hideLoader();
-    renderSearch();
+    renderSearch(films);
     renderFilms(filmsContainer, films);
     renderTopFilms(filmsTopContainers, films);
     renderFilters(filtersContainer, filtersData, films);

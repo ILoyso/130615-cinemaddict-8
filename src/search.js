@@ -31,6 +31,14 @@ export default class Search extends Component {
   }
 
   /**
+   * Getter for input element
+   * @return {Node}
+   */
+  get input() {
+    return this._element.querySelector(`.search__field`);
+  }
+
+  /**
    * Getter for search template
    * @return {string}
    */
