@@ -2,6 +2,7 @@ import filtersData from './get-filters';
 import Film from './film';
 import FilmPopup from './film-popup';
 import Filter from './filter';
+import Search from './search';
 import Statistic from './statistic';
 import API from './api';
 import Provider from './provider';
@@ -11,6 +12,8 @@ const HIDDEN_CLASS = `visually-hidden`;
 
 const body = document.querySelector(`body`);
 const main = document.querySelector(`.main`);
+const header = document.querySelector(`.header`);
+const profileContainer = document.querySelector(`.header__profile`);
 const filmsWrapper = document.querySelector(`.films`);
 const filtersContainer = document.querySelector(`.main-navigation`);
 const filmsContainer = document.querySelector(`.films-list .films-list__container`);
@@ -261,6 +264,13 @@ const renderFilters = (container, filters, films) => {
 };
 
 
+/** Function for rendering search */
+const renderSearch = () => {
+  const search = new Search();
+  header.insertBefore(search.render(), profileContainer);
+};
+
+
 /**
  * Function for show statistic
  * @param {Object[]} films
@@ -301,6 +311,7 @@ showLoader();
 provider.getFilms()
   .then((films) => {
     hideLoader();
+    renderSearch();
     renderFilms(filmsContainer, films);
     renderTopFilms(filmsTopContainers, films);
     renderFilters(filtersContainer, filtersData, films);
