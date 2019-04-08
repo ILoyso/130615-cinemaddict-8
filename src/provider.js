@@ -1,4 +1,4 @@
-import ModelFilm from './model-film';
+import ModelFilm from './utils/model-film';
 
 /**
  * Function for convert object to array

@@ -1,7 +1,7 @@
-import Component from "./component";
+import Component from "../utils/component";
 
 /** Class representing a search */
-export default class Search extends Component {
+export default class SearchView extends Component {
 
   /** Create search component */
   constructor() {

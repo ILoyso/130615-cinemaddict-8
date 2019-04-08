@@ -1,7 +1,7 @@
-import Component from "./component";
+import Component from "../utils/component";
 
 /** Class representing a filter */
-export default class Filter extends Component {
+export default class FilterView extends Component {
 
   /**
    * Create filter

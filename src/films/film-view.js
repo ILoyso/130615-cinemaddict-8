@@ -1,8 +1,8 @@
-import Component from "./component";
+import Component from "../utils/component";
 import moment from 'moment';
 
 /** Class representing a film */
-export default class Film extends Component {
+export default class FilmView extends Component {
 
   /**
    * Create c film

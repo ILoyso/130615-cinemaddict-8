@@ -1,12 +1,12 @@
-import Component from "./component";
-import {createElement, isNumeric} from "./utils";
+import Component from "../utils/component";
+import {createElement, isNumeric} from "../utils/utils";
 import moment from 'moment';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 
 /** Class representing a statistic */
-export default class Statistic extends Component {
+export default class StatisticView extends Component {
 
   /**
    * Create statistic

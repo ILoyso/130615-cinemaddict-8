@@ -1,9 +1,9 @@
-import {MAX_FILM_RATING, KeyCodes} from "./utils";
-import Component from "./component";
+import {MAX_FILM_RATING, KeyCodes, HIDDEN_CLASS} from "../utils/utils";
+import Component from "../utils/component";
 import moment from 'moment';
 
 /** Class representing a film popup */
-export default class FilmPopup extends Component {
+export default class FilmPopupView extends Component {
 
   /**
    * Create a popup
@@ -193,7 +193,7 @@ export default class FilmPopup extends Component {
       comments: this._comments
     };
 
-    const filmPopupMapper = FilmPopup.createMapper(entry);
+    const filmPopupMapper = FilmPopupView.createMapper(entry);
 
     for (const pair of formData.entries()) {
       const [property, value] = pair;
@@ -431,7 +431,7 @@ export default class FilmPopup extends Component {
 
   /** Method for show/hide button for remove last comment */
   toggleRemoveCommentButton() {
-    this._element.querySelector(`.film-details__watched-reset`).classList.toggle(`visually-hidden`);
+    this._element.querySelector(`.film-details__watched-reset`).classList.toggle(HIDDEN_CLASS);
   }
 
   /** Method for unbing function from close button */
