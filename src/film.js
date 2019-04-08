@@ -67,6 +67,17 @@ export default class Film extends Component {
   }
 
   /**
+   * Method for parse film duration in milliseconds to h:mm
+   * @return {String}
+   * @private
+   */
+  _getDuration() {
+    const hours = moment.duration(this._filmInfo.duration).hours();
+    const minutes = moment.duration(this._filmInfo.duration).minutes();
+    return `${hours}:${minutes < 10 ? `0${minutes}` : minutes}`;
+  }
+
+  /**
    * Method for check for function and if yes to write it in this._onFavorite
    * @param {Event} evt
    * @private
@@ -166,7 +177,7 @@ export default class Film extends Component {
           <p class="film-card__rating">${this._filmInfo.rating}</p>
           <p class="film-card__info">
             <span class="film-card__year">${moment(this._filmInfo.premiere).format(`YYYY`)}</span>
-            <span class="film-card__duration">${moment.duration(this._filmInfo.duration).hours()}h&nbsp;${moment.duration(this._filmInfo.duration).minutes()}m </span>
+            <span class="film-card__duration">${this._getDuration()}</span>
             <span class="film-card__genre">${Array.from(this._filmInfo.genres).join(`, `)}</span>
           </p>
           <img src="./images/posters/${this._filmInfo.poster}.jpg" alt="" class="film-card__poster">
