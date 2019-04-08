@@ -1,4 +1,4 @@
-import {MAX_FILM_RATING, ENTER_KEY_CODE} from "./utils";
+import {MAX_FILM_RATING, KeyCodes} from "./utils";
 import Component from "./component";
 import moment from 'moment';
 
@@ -47,6 +47,7 @@ export default class FilmPopup extends Component {
     this._onAddComment = this._onAddComment.bind(this);
     this._onChangeRating = this._onChangeRating.bind(this);
     this._onRemoveLastComment = this._onRemoveLastComment.bind(this);
+    this._onEscPress = this._onEscPress.bind(this);
   }
 
   /**
@@ -100,7 +101,7 @@ export default class FilmPopup extends Component {
   _onAddComment(evt) {
     this._element.querySelector(`.film-details__comment-input`).style.border = `1px solid #979797`;
 
-    if ((evt.ctrlKey || evt.metaKey) && (evt.keyCode === ENTER_KEY_CODE)) {
+    if ((evt.ctrlKey || evt.metaKey) && (evt.keyCode === KeyCodes.ENTER)) {
       evt.preventDefault();
       this.blockComments();
 
@@ -152,6 +153,17 @@ export default class FilmPopup extends Component {
     }
 
     this.update(newData);
+  }
+
+  /**
+   * Method for close popup if on Esc press
+   * @param {Event} evt
+   * @private
+   */
+  _onEscPress(evt) {
+    if (evt.keyCode === KeyCodes.ESC) {
+      this._onCloseButtonClick();
+    }
   }
 
   /**
@@ -362,6 +374,8 @@ export default class FilmPopup extends Component {
 
   /** Method for bing function to close button */
   bind() {
+    document.addEventListener(`keydown`, this._onEscPress);
+
     this._element.querySelector(`.film-details__close-btn`).addEventListener(`click`, this._onCloseButtonClick);
 
     this._element.querySelectorAll(`.film-details__emoji-item`).forEach((element) => {
@@ -422,6 +436,8 @@ export default class FilmPopup extends Component {
 
   /** Method for unbing function from close button */
   unbind() {
+    document.removeEventListener(`keydown`, this._onEscPress);
+
     this._element.querySelector(`.film-details__close-btn`).removeEventListener(`click`, this._onCloseButtonClick);
 
     this._element.querySelectorAll(`.film-details__emoji-item`).forEach((element) => {
