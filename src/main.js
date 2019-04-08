@@ -104,10 +104,23 @@ const renderFilms = (container, films) => {
           .then((newFilm) => {
             filmPopupComponent.unblockComments();
             filmPopupComponent.updateComments(newFilm);
+            filmPopupComponent.element.querySelector(`.film-details__watched-status`).textContent = `Comment added`;
+            filmPopupComponent.toggleRemoveCommentButton();
           })
           .catch(() => {
             filmPopupComponent.shake();
             filmPopupComponent.errorComments();
+          });
+      };
+
+      filmPopupComponent.onRemoveComment = () => {
+        film.comments.pop();
+
+        provider.updateFilm({id: film.id, data: film.toRAW()})
+          .then((newFilm) => {
+            filmPopupComponent.updateComments(newFilm);
+            filmPopupComponent.element.querySelector(`.film-details__watched-status`).textContent = `Comment deleted`;
+            filmPopupComponent.toggleRemoveCommentButton();
           });
       };
 
