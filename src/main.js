@@ -13,7 +13,7 @@ const filmsContainer = document.querySelector(`.films-list .films-list__containe
 const filmsTopContainers = document.querySelectorAll(`.films-list--extra .films-list__container`);
 const loadingContainer = document.querySelector(`.films-list__title`);
 
-const AUTHORIZATION = `Basic l76oy54048so925dfdfd0`;
+const AUTHORIZATION = `Basic l76oy54048so925dfdfd06`;
 const END_POINT = `https://es8-demo-srv.appspot.com/moowle/`;
 const FILMS_STORE_KEY = `films-store-key`;
 

@@ -5,24 +5,7 @@ export const KeyCodes = {
   ESC: 27
 };
 
-export const Time = {
-  YEAR: 365,
-  MONTH: 30,
-  DAY: 24,
-  HOUR: 60,
-  MINUTE: 60,
-  SECOND: 1000
-};
-
 export const HIDDEN_CLASS = `visually-hidden`;
-
-/**
- * Function for denerate random number, not including max
- * @param {Number} max
- * @param {Number} min
- * @return {Number}
- */
-export const generateRandomNumber = (max, min = 0) => Math.floor(Math.random() * (max - min)) + min;
 
 
 /**
