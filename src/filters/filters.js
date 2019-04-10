@@ -18,7 +18,7 @@ const filterFilms = (films, filterName) => {
   let filteredFilms = films;
 
   switch (filterName) {
-    case `all`:
+    case `all movies`:
       filteredFilms = films;
       break;
     case `watchlist`:
@@ -33,6 +33,28 @@ const filterFilms = (films, filterName) => {
   }
 
   return filteredFilms;
+};
+
+
+const getFilmsCount = (films, filterName) => {
+  let filmsCount = 0;
+
+  switch (filterName) {
+    case `all movies`:
+      filmsCount = films.length;
+      break;
+    case `watchlist`:
+      filmsCount = films.filter((it) => it.userInfo.isGoingToWatch).length;
+      break;
+    case `history`:
+      filmsCount = films.filter((it) => it.userInfo.isViewed).length;
+      break;
+    case `favorites`:
+      filmsCount = films.filter((it) => it.userInfo.isFavorite).length;
+      break;
+  }
+
+  return filmsCount;
 };
 
 
@@ -66,10 +88,9 @@ export const renderFilters = (container, filters, films) => {
 
   filters.forEach((filter) => {
     const filterComponent = new FilterView(filter);
+    const filterName = filterComponent.filterId;
 
     filterComponent.onFilter = () => {
-      const filterName = filterComponent.filterId;
-
       filters = updateActiveFilter(filter, filters);
       filter.isActive = true;
       filterComponent.update(filter);
@@ -91,6 +112,7 @@ export const renderFilters = (container, filters, films) => {
     };
 
     fragment.appendChild(filterComponent.render());
+    filterComponent.setFilterCount(getFilmsCount(films, filterName));
   });
 
   container.appendChild(fragment);
