@@ -22,13 +22,13 @@ const filterFilms = (films, filterName) => {
       filteredFilms = films;
       break;
     case `watchlist`:
-      filteredFilms = films.filter((it) => it.userInfo.isGoingToWatch);
+      filteredFilms = films.filter((film) => film.userInfo.isGoingToWatch);
       break;
     case `history`:
-      filteredFilms = films.filter((it) => it.userInfo.isViewed);
+      filteredFilms = films.filter((film) => film.userInfo.isViewed);
       break;
     case `favorites`:
-      filteredFilms = films.filter((it) => it.userInfo.isFavorite);
+      filteredFilms = films.filter((film) => film.userInfo.isFavorite);
       break;
   }
 
@@ -44,13 +44,13 @@ const getFilmsCount = (films, filterName) => {
       filmsCount = films.length;
       break;
     case `watchlist`:
-      filmsCount = films.filter((it) => it.userInfo.isGoingToWatch).length;
+      filmsCount = films.filter((film) => film.userInfo.isGoingToWatch).length;
       break;
     case `history`:
-      filmsCount = films.filter((it) => it.userInfo.isViewed).length;
+      filmsCount = films.filter((film) => film.userInfo.isViewed).length;
       break;
     case `favorites`:
-      filmsCount = films.filter((it) => it.userInfo.isFavorite).length;
+      filmsCount = films.filter((film) => film.userInfo.isFavorite).length;
       break;
   }
 
