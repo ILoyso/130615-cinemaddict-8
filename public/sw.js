@@ -42,8 +42,8 @@ self.addEventListener(`fetch`, (evt) => {
           .then((response) => {
             return response;
           })
-          .catch((err) => {
-            throw err;
+          .catch((error) => {
+            throw error;
           });
       }),
   );
