@@ -5,6 +5,9 @@ import {renderUserRank} from '../utils/utils';
 
 const body = document.querySelector(`body`);
 const rankContainer = document.querySelector(`.profile__rating`);
+const filmsTopContainers = document.querySelectorAll(`.films-list--extra .films-list__container`);
+
+const TOP_FILMS_COUNT = 2;
 
 
 /**
@@ -98,6 +101,7 @@ export const renderFilms = (container, films) => {
           .then((newFilm) => {
             filmComponent.update(newFilm);
             renderUserRank(rankContainer, films);
+            renderMostCommentedFilms(filmsTopContainers[1], films);
             body.removeChild(filmPopupComponent.element);
             filmPopupComponent.unrender();
           })
@@ -119,11 +123,27 @@ export const renderFilms = (container, films) => {
 
 /**
  * Function for render top films
- * @param {NodeListOf} containers
+ * @param {Node} container
  * @param {Object[]} films
  */
-export const renderTopFilms = (containers, films) => {
-  containers.forEach((container) => {
-    renderFilms(container, films);
-  });
+export const renderTopFilms = (container, films) => {
+  const filteredFilms = Array.from(films);
+  const sortFilms = (film1, film2) => film2.filmInfo.rating - film1.filmInfo.rating;
+  filteredFilms.sort(sortFilms);
+
+  renderFilms(container, filteredFilms.splice(0, TOP_FILMS_COUNT));
+};
+
+
+/**
+ * Function for render most commented films
+ * @param {Node} container
+ * @param {Object[]} films
+ */
+export const renderMostCommentedFilms = (container, films) => {
+  const filteredFilms = Array.from(films);
+  const sortFilms = (film1, film2) => film2.comments.length - film1.comments.length;
+  filteredFilms.sort(sortFilms);
+
+  renderFilms(container, filteredFilms.splice(0, TOP_FILMS_COUNT));
 };
