@@ -14,13 +14,14 @@ const TOP_FILMS_COUNT = 2;
  * Function for render films
  * @param {Node} container
  * @param {Object[]} films
+ * @param {Boolean} hasControls [hasControls = true]
  */
-export const renderFilms = (container, films) => {
+export const renderFilms = (container, films, hasControls = true) => {
   container.innerHTML = ``;
   const fragment = document.createDocumentFragment();
 
   films.forEach((film) => {
-    const filmComponent = new FilmView(film);
+    const filmComponent = new FilmView(film, hasControls);
 
     filmComponent.onAddToWatchList = () => {
       film.userInfo.isGoingToWatch = !film.userInfo.isGoingToWatch;
@@ -131,7 +132,7 @@ export const renderTopFilms = (container, films) => {
   const sortFilms = (film1, film2) => film2.filmInfo.rating - film1.filmInfo.rating;
   filteredFilms.sort(sortFilms);
 
-  renderFilms(container, filteredFilms.splice(0, TOP_FILMS_COUNT));
+  renderFilms(container, filteredFilms.splice(0, TOP_FILMS_COUNT), false);
 };
 
 
@@ -145,5 +146,5 @@ export const renderMostCommentedFilms = (container, films) => {
   const sortFilms = (film1, film2) => film2.comments.length - film1.comments.length;
   filteredFilms.sort(sortFilms);
 
-  renderFilms(container, filteredFilms.splice(0, TOP_FILMS_COUNT));
+  renderFilms(container, filteredFilms.splice(0, TOP_FILMS_COUNT), false);
 };
