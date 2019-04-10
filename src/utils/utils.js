@@ -68,7 +68,7 @@ export const hideLoader = (container) => {
 
 
 /**
- * Method for show user rank
+ * Function for show user rank
  * @param {Node} container
  * @param {Object[]} films
  */
@@ -85,4 +85,14 @@ export const renderUserRank = (container, films) => {
   }
 
   container.textContent = userRank;
+};
+
+
+/**
+ * Function for show all movies count
+ * @param {Node} container
+ * @param {Object[]} films
+ */
+export const renderMaxMovieCount = (container, films) => {
+  container.textContent = `${films.length} ${films.length === 1 ? `movie` : `movies`} inside`;
 };
