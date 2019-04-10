@@ -1,4 +1,4 @@
-export const MAX_FILM_RATING = 10;
+export const MAX_FILM_RATING = 9;
 
 export const KeyCodes = {
   ENTER: 13,
