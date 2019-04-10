@@ -5,6 +5,8 @@ export const KeyCodes = {
   ESC: 27
 };
 
+const Ranks = [`Notice`, `Fan`, `Movie buff`];
+
 export const HIDDEN_CLASS = `visually-hidden`;
 
 
@@ -62,4 +64,25 @@ export const showLoader = (container, text = `Loading movies...`) => {
 export const hideLoader = (container) => {
   container.textContent = `Loading movies...`;
   container.classList.add(HIDDEN_CLASS);
+};
+
+
+/**
+ * Method for show user rank
+ * @param {Node} container
+ * @param {Object[]} films
+ */
+export const renderUserRank = (container, films) => {
+  let userRank = ``;
+  const filteredFilms = films.filter((it) => it.userInfo.isViewed);
+
+  if (filteredFilms.length <= 10) {
+    userRank = Ranks[0];
+  } else if (filteredFilms.length <= 20) {
+    userRank = Ranks[1];
+  } else {
+    userRank = Ranks[2];
+  }
+
+  container.textContent = userRank;
 };

@@ -1,8 +1,10 @@
 import FilmView from './film-view';
 import FilmPopupView from './film-popup-view';
 import {provider} from '../main';
+import {renderUserRank} from '../utils/utils';
 
 const body = document.querySelector(`body`);
+const rankContainer = document.querySelector(`.profile__rating`);
 
 
 /**
@@ -41,6 +43,7 @@ export const renderFilms = (container, films) => {
       provider.updateFilm({id: film.id, data: film.toRAW()})
         .then((newFilm) => {
           filmComponent.update(newFilm);
+          renderUserRank(rankContainer, films);
         });
     };
 
@@ -94,6 +97,7 @@ export const renderFilms = (container, films) => {
         provider.updateFilm({id: film.id, data: film.toRAW()})
           .then((newFilm) => {
             filmComponent.update(newFilm);
+            renderUserRank(rankContainer, films);
             body.removeChild(filmPopupComponent.element);
             filmPopupComponent.unrender();
           })

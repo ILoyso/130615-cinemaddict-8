@@ -4,7 +4,7 @@ import Provider from './provider';
 import Store from './store';
 
 import {renderFilters} from './filters/filters';
-import {showLoader, hideLoader} from './utils/utils';
+import {showLoader, hideLoader, renderUserRank} from './utils/utils';
 import {renderSearch} from './search/search';
 import {renderFilms, renderTopFilms} from './films/films';
 
@@ -12,6 +12,7 @@ const filtersContainer = document.querySelector(`.main-navigation`);
 const filmsContainer = document.querySelector(`.films-list .films-list__container`);
 const filmsTopContainers = document.querySelectorAll(`.films-list--extra .films-list__container`);
 const loadingContainer = document.querySelector(`.films-list__title`);
+const rankContainer = document.querySelector(`.profile__rating`);
 
 const AUTHORIZATION = `Basic l76oy54048so925dfdfd06`;
 const END_POINT = `https://es8-demo-srv.appspot.com/moowle/`;
@@ -56,6 +57,7 @@ provider.getFilms()
     renderFilms(filmsContainer, films);
     renderTopFilms(filmsTopContainers, films);
     renderFilters(filtersContainer, filtersData, films);
+    renderUserRank(rankContainer, films);
   })
   .catch(() => {
     showLoader(`Something went wrong while loading movies. Check your connection or try again later`);
