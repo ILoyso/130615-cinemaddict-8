@@ -63,7 +63,7 @@ export default class ModelFilm {
         'poster': `images/posters/${this.filmInfo.poster}.jpg`,
         'runtime': this.filmInfo.duration / 60000,
         'actors': this.filmInfo.actors,
-        'genres': [...this.filmInfo.genres.values()],
+        'genre': [...this.filmInfo.genres.values()],
         'age_rating': this.filmInfo.restrictions,
         'director': this.filmInfo.director,
         'writers': this.filmInfo.writers,
