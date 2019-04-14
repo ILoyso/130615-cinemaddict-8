@@ -33,20 +33,6 @@ export const isNumeric = (n) => {
 
 
 /**
- * Function for check should 'Show more' button be visible or no
- * @param {Node} button
- * @param {Object[]} films
- */
-export const checkLoadMoreButton = (button, films) => {
-  if (films.length === 0) {
-    button.classList.add(HIDDEN_CLASS);
-  } else {
-    button.classList.remove(HIDDEN_CLASS);
-  }
-};
-
-
-/**
  * Function for show loader
  * @param {Node} container
  * @param {String} text

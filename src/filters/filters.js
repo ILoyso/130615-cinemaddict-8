@@ -1,11 +1,10 @@
 import FilterView from './filter-view';
 import {hideStatistic, showStatistic} from '../statistic/statistic';
-import {HIDDEN_CLASS, checkLoadMoreButton} from '../utils/utils';
+import {HIDDEN_CLASS} from '../utils/utils';
 import {renderFilms} from '../films/films';
 
 const filmsWrapper = document.querySelector(`.films`);
 const filmsContainer = document.querySelector(`.films-list .films-list__container`);
-const showMoreButton = document.querySelector(`.films-list__show-more`);
 
 
 /**
@@ -104,7 +103,6 @@ export const renderFilters = (container, filters, films) => {
 
         const filteredFilms = filterFilms(films, filterName);
 
-        checkLoadMoreButton(showMoreButton, filteredFilms);
         renderFilms(filmsContainer, filteredFilms);
       }
 

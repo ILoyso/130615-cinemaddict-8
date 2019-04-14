@@ -1,11 +1,9 @@
 import SearchView from './search-view';
 import {renderFilms} from '../films/films';
-import {checkLoadMoreButton} from '../utils/utils';
 
 const header = document.querySelector(`.header`);
 const profileContainer = document.querySelector(`.header__profile`);
 const filmsContainer = document.querySelector(`.films-list .films-list__container`);
-const showMoreButton = document.querySelector(`.films-list__show-more`);
 
 
 /**
@@ -27,7 +25,6 @@ export const renderSearch = (films) => {
   search.onSearch = () => {
     const filteredFilms = searchFilm(films, search.input.value);
 
-    checkLoadMoreButton(showMoreButton, filteredFilms);
     renderFilms(filmsContainer, filteredFilms);
   };
 
