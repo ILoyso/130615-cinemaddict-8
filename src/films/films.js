@@ -3,14 +3,15 @@ import FilmPopupView from './film-popup-view';
 import {provider} from '../main';
 import {HIDDEN_CLASS, renderUserRank} from '../utils/utils';
 
+const TOP_FILMS_COUNT = 2;
+const MAX_VISIBLE_FILMS = 5;
+
 const body = document.querySelector(`body`);
 const rankContainer = document.querySelector(`.profile__rating`);
 const filmsContainer = document.querySelector(`.films-list .films-list__container`);
 const filmsTopContainers = document.querySelectorAll(`.films-list--extra .films-list__container`);
 const showMoreButton = document.querySelector(`.films-list__show-more`);
 
-const TOP_FILMS_COUNT = 2;
-const MAX_VISIBLE_FILMS = 5;
 let currentVisibleFilms = 0;
 let allFilmsData = [];
 

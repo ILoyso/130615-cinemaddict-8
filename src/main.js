@@ -2,11 +2,14 @@ import filtersData from './filters/filters-data';
 import API from './api';
 import Provider from './provider';
 import Store from './store';
-
 import {renderFilters} from './filters/filters';
 import {showLoader, hideLoader, renderUserRank, renderMaxMovieCount} from './utils/utils';
 import {renderSearch} from './search/search';
 import {renderFilms, renderTopFilms, renderMostCommentedFilms} from './films/films';
+
+const AUTHORIZATION = `Basic l76oy54048so9d00863`;
+const END_POINT = `https://es8-demo-srv.appspot.com/moowle/`;
+const FILMS_STORE_KEY = `films-store-key`;
 
 const filtersContainer = document.querySelector(`.main-navigation`);
 const filmsContainer = document.querySelector(`.films-list .films-list__container`);
@@ -14,10 +17,6 @@ const filmsTopContainers = document.querySelectorAll(`.films-list--extra .films-
 const loadingContainer = document.querySelector(`.films-list__title`);
 const rankContainer = document.querySelector(`.profile__rating`);
 const maxMovieContainer = document.querySelector(`.footer__statistics p`);
-
-const AUTHORIZATION = `Basic l76oy54048so9d00863`;
-const END_POINT = `https://es8-demo-srv.appspot.com/moowle/`;
-const FILMS_STORE_KEY = `films-store-key`;
 
 
 /**

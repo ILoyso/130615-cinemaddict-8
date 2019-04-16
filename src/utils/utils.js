@@ -1,13 +1,13 @@
 export const MAX_FILM_RATING = 9;
 
+export const HIDDEN_CLASS = `visually-hidden`;
+
 export const KeyCodes = {
   ENTER: 13,
   ESC: 27
 };
 
 const Ranks = [`Notice`, `Fan`, `Movie buff`];
-
-export const HIDDEN_CLASS = `visually-hidden`;
 
 
 /**
