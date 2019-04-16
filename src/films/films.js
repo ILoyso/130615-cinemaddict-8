@@ -123,6 +123,25 @@ const createFilm = (films, film, hasControls) => {
 
 
 /**
+ * Function for render films to DOM
+ * @param {Node} container
+ * @param {Object[]} films
+ * @param {Boolean} hasControls
+ * @param {Number} filmsCount
+ * @param {Number} indexStart [indexStart = 0]
+ */
+const renderFilmsToDom = (container, films, hasControls, filmsCount, indexStart = 0) => {
+  const fragment = document.createDocumentFragment();
+
+  for (let i = indexStart; i < filmsCount; i++) {
+    fragment.appendChild(createFilm(films, films[i], hasControls));
+  }
+
+  container.appendChild(fragment);
+};
+
+
+/**
  * Function for check need to show "Show more button" or no
  * @param {Boolean} needButton
  */
@@ -138,7 +157,6 @@ const checkShowMoreButton = (needButton) => {
 
 /** Function for render first part of films and check, need "Show More" button or no */
 const renderFirstFilms = () => {
-  const fragment = document.createDocumentFragment();
   let needButton = true;
   currentVisibleFilms = MAX_VISIBLE_FILMS;
 
@@ -149,18 +167,13 @@ const renderFirstFilms = () => {
     needButton = false;
   }
 
-  for (let i = 0; i < currentVisibleFilms; i++) {
-    fragment.appendChild(createFilm(allFilmsData, allFilmsData[i], true));
-  }
-
+  renderFilmsToDom(filmsContainer, allFilmsData, true, currentVisibleFilms);
   checkShowMoreButton(needButton);
-  filmsContainer.appendChild(fragment);
 };
 
 
 /** Function for render parts of films */
 const renderFilmsPartly = () => {
-  const fragment = document.createDocumentFragment();
   const filmsCount = allFilmsData.length;
   const currentFilmsCount = currentVisibleFilms;
   let needButton = true;
@@ -175,12 +188,8 @@ const renderFilmsPartly = () => {
     needButton = false;
   }
 
-  for (let i = currentFilmsCount; i < currentVisibleFilms; i++) {
-    fragment.appendChild(createFilm(allFilmsData, allFilmsData[i], true));
-  }
-
+  renderFilmsToDom(filmsContainer, allFilmsData, true, currentVisibleFilms, currentFilmsCount);
   checkShowMoreButton(needButton);
-  filmsContainer.appendChild(fragment);
 };
 
 
@@ -193,16 +202,12 @@ const renderFilmsPartly = () => {
  */
 export const renderFilms = (container, films, allFilms = true, hasControls = true) => {
   container.innerHTML = ``;
-  const fragment = document.createDocumentFragment();
 
   if (allFilms) {
     allFilmsData = films;
     renderFirstFilms();
   } else {
-    films.forEach((film) => {
-      fragment.appendChild(createFilm(films, film, hasControls));
-    });
-    container.appendChild(fragment);
+    renderFilmsToDom(container, films, hasControls, films.length);
   }
 };
 
