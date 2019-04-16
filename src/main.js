@@ -7,7 +7,7 @@ import {showLoader, hideLoader, renderUserRank, renderMaxMovieCount} from './uti
 import {renderSearch} from './search/search';
 import {showFilms, showTopFilms, showMostCommentedFilms} from './films/films';
 
-const AUTHORIZATION = `Basic l76oy54048so9d00863`;
+const AUTHORIZATION = `Basic l76oy54048so9d00f863`;
 const END_POINT = `https://es8-demo-srv.appspot.com/moowle/`;
 const FILMS_STORE_KEY = `films-store-key`;
 

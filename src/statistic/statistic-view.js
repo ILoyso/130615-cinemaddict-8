@@ -1,6 +1,7 @@
-import Component from "../utils/component";
-import {createElement, isNumeric} from "../utils/utils";
+import Component from '../utils/component';
+import {createElement, isNumeric} from '../utils/utils';
 import moment from 'moment';
+import 'moment-duration-format';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
@@ -159,7 +160,7 @@ export default class StatisticView extends Component {
    */
   _getFilmsDurationTemplate() {
     const totalDuration = this._filteringFilms.reduce((duration, film) => duration + film.filmInfo.duration, 0);
-    return `${moment.duration(totalDuration).hours()} <span class="statistic__item-description">h</span> ${moment.duration(totalDuration).minutes()} <span class="statistic__item-description">m</span>`;
+    return `${moment.duration(totalDuration).format(`h`)} <span class="statistic__item-description">h</span> ${moment.duration(totalDuration).minutes()} <span class="statistic__item-description">m</span>`;
   }
 
   /**
