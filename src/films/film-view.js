@@ -1,5 +1,6 @@
 import Component from '../utils/component';
 import moment from 'moment';
+import 'moment-duration-format';
 import {HIDDEN_CLASS} from '../utils/utils';
 
 /** Class representing a film */
@@ -66,17 +67,6 @@ export default class FilmView extends Component {
             <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" style="border: ${this._userInfo.isViewed ? `1px solid white` : `0 none`}"><!--Mark as watched-->WTCHD</button>
             <button class="film-card__controls-item button film-card__controls-item--favorite" style="border: ${this._userInfo.isFavorite ? `1px solid white` : `0 none`}"><!--Mark as favorite-->FAV</button>
           </form>`;
-  }
-
-  /**
-   * Method for parse film duration in milliseconds to h:mm
-   * @return {String}
-   * @private
-   */
-  _getDuration() {
-    const hours = moment.duration(this._filmInfo.duration).hours();
-    const minutes = moment.duration(this._filmInfo.duration).minutes();
-    return `${hours}:${minutes < 10 ? `0${minutes}` : minutes}`;
   }
 
   /**
@@ -179,7 +169,7 @@ export default class FilmView extends Component {
           <p class="film-card__rating">${this._filmInfo.rating}</p>
           <p class="film-card__info">
             <span class="film-card__year">${moment(this._filmInfo.premiere).format(`YYYY`)}</span>
-            <span class="film-card__duration">${this._getDuration()}</span>
+            <span class="film-card__duration">${moment.duration(this._filmInfo.duration).format(`h:mm`)}</span>
             <span class="film-card__genre">${Array.from(this._filmInfo.genres).join(`, `)}</span>
           </p>
           <img src="./images/posters/${this._filmInfo.poster}.jpg" alt="" class="film-card__poster">
