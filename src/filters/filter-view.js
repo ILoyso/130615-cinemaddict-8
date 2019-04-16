@@ -1,4 +1,4 @@
-import Component from "../utils/component";
+import Component from '../utils/component';
 import {HIDDEN_CLASS} from '../utils/utils';
 
 /** Class representing a filter */

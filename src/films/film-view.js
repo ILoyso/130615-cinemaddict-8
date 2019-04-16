@@ -1,4 +1,4 @@
-import Component from "../utils/component";
+import Component from '../utils/component';
 import moment from 'moment';
 import {HIDDEN_CLASS} from '../utils/utils';
 

@@ -1,4 +1,4 @@
-import Component from "../utils/component";
+import Component from '../utils/component';
 
 /** Class representing a search */
 export default class SearchView extends Component {

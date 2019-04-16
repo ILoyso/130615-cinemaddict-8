@@ -1,5 +1,5 @@
-import {MAX_FILM_RATING, KeyCodes, HIDDEN_CLASS} from "../utils/utils";
-import Component from "../utils/component";
+import {MAX_FILM_RATING, KeyCodes, HIDDEN_CLASS} from '../utils/utils';
+import Component from '../utils/component';
 import moment from 'moment';
 
 /** Class representing a film popup */
