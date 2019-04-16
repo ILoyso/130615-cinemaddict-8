@@ -150,17 +150,17 @@ const checkShowMoreButton = (needButton) => {
     showMoreButton.classList.remove(HIDDEN_CLASS);
   } else {
     showMoreButton.classList.add(HIDDEN_CLASS);
-    showMoreButton.removeEventListener(`click`, renderFilmsPartly);
+    showMoreButton.removeEventListener(`click`, showFilmsPartly);
   }
 };
 
 
 /** Function for render first part of films and check, need "Show More" button or no */
-const renderFirstFilms = () => {
+const showFirstFilms = () => {
   let needButton = true;
   currentVisibleFilms = MAX_VISIBLE_FILMS;
 
-  showMoreButton.addEventListener(`click`, renderFilmsPartly);
+  showMoreButton.addEventListener(`click`, showFilmsPartly);
 
   if (allFilmsData.length <= MAX_VISIBLE_FILMS) {
     currentVisibleFilms = allFilmsData.length;
@@ -173,7 +173,7 @@ const renderFirstFilms = () => {
 
 
 /** Function for render parts of films */
-const renderFilmsPartly = () => {
+const showFilmsPartly = () => {
   const filmsCount = allFilmsData.length;
   const currentFilmsCount = currentVisibleFilms;
   let needButton = true;
@@ -200,12 +200,12 @@ const renderFilmsPartly = () => {
  * @param {Boolean} allFilms [allFilms = true]
  * @param {Boolean} hasControls [hasControls = true]
  */
-export const renderFilms = (container, films, allFilms = true, hasControls = true) => {
+export const showFilms = (container, films, allFilms = true, hasControls = true) => {
   container.innerHTML = ``;
 
   if (allFilms) {
     allFilmsData = films;
-    renderFirstFilms();
+    showFirstFilms();
   } else {
     renderFilmsToDom(container, films, hasControls, films.length);
   }
@@ -222,7 +222,7 @@ const renderTopFilms = (container, films, sortFilms) => {
   const filteredFilms = Array.from(films);
   filteredFilms.sort(sortFilms);
 
-  renderFilms(container, filteredFilms.splice(0, TOP_FILMS_COUNT), false, false);
+  showFilms(container, filteredFilms.splice(0, TOP_FILMS_COUNT), false, false);
 };
 
 

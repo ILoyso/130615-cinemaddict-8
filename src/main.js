@@ -5,7 +5,7 @@ import Store from './store';
 import {renderFilters} from './filters/filters';
 import {showLoader, hideLoader, renderUserRank, renderMaxMovieCount} from './utils/utils';
 import {renderSearch} from './search/search';
-import {renderFilms, showTopFilms, showMostCommentedFilms} from './films/films';
+import {showFilms, showTopFilms, showMostCommentedFilms} from './films/films';
 
 const AUTHORIZATION = `Basic l76oy54048so9d00863`;
 const END_POINT = `https://es8-demo-srv.appspot.com/moowle/`;
@@ -54,7 +54,7 @@ provider.getFilms()
   .then((films) => {
     hideLoader(loadingContainer);
     renderSearch(films);
-    renderFilms(filmsContainer, films);
+    showFilms(filmsContainer, films);
     showTopFilms(filmsTopContainers[0], films);
     showMostCommentedFilms(filmsTopContainers[1], films);
     renderFilters(filtersContainer, filtersData, films);

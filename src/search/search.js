@@ -1,5 +1,5 @@
 import SearchView from './search-view';
-import {renderFilms} from '../films/films';
+import {showFilms} from '../films/films';
 
 const header = document.querySelector(`.header`);
 const profileContainer = document.querySelector(`.header__profile`);
@@ -25,7 +25,7 @@ export const renderSearch = (films) => {
   search.onSearch = () => {
     const filteredFilms = searchFilm(films, search.input.value);
 
-    renderFilms(filmsContainer, filteredFilms);
+    showFilms(filmsContainer, filteredFilms);
   };
 
   header.insertBefore(search.render(), profileContainer);

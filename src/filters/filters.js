@@ -1,7 +1,7 @@
 import FilterView from './filter-view';
 import {hideStatistic, showStatistic} from '../statistic/statistic';
 import {HIDDEN_CLASS} from '../utils/utils';
-import {renderFilms} from '../films/films';
+import {showFilms} from '../films/films';
 
 const filmsWrapper = document.querySelector(`.films`);
 const filmsContainer = document.querySelector(`.films-list .films-list__container`);
@@ -81,7 +81,7 @@ export const renderFilters = (container, filters, films) => {
 
         const filteredFilms = filterFilms(films, filterName);
 
-        renderFilms(filmsContainer, filteredFilms);
+        showFilms(filmsContainer, filteredFilms);
       }
 
       renderFilters(container, filters, films);
