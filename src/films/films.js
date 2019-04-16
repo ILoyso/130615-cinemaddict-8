@@ -105,7 +105,7 @@ const createFilm = (films, film, hasControls) => {
         .then((newFilm) => {
           filmComponent.update(newFilm);
           renderUserRank(rankContainer, films);
-          renderMostCommentedFilms(filmsTopContainers[1], films);
+          showMostCommentedFilms(filmsTopContainers[1], films);
           body.removeChild(filmPopupComponent.element);
           filmPopupComponent.unrender();
         })
@@ -213,13 +213,13 @@ export const renderFilms = (container, films, allFilms = true, hasControls = tru
 
 
 /**
- * Function for render top films
+ * Function for render top and most commented films
  * @param {Node} container
  * @param {Object[]} films
+ * @param {Function} sortFilms
  */
-export const renderTopFilms = (container, films) => {
+const renderTopFilms = (container, films, sortFilms) => {
   const filteredFilms = Array.from(films);
-  const sortFilms = (film1, film2) => film2.filmInfo.rating - film1.filmInfo.rating;
   filteredFilms.sort(sortFilms);
 
   renderFilms(container, filteredFilms.splice(0, TOP_FILMS_COUNT), false, false);
@@ -227,14 +227,24 @@ export const renderTopFilms = (container, films) => {
 
 
 /**
- * Function for render most commented films
+ * Function for show top films
  * @param {Node} container
  * @param {Object[]} films
  */
-export const renderMostCommentedFilms = (container, films) => {
-  const filteredFilms = Array.from(films);
-  const sortFilms = (film1, film2) => film2.comments.length - film1.comments.length;
-  filteredFilms.sort(sortFilms);
+export const showTopFilms = (container, films) => {
+  const sortFilms = (film1, film2) => film2.filmInfo.rating - film1.filmInfo.rating;
 
-  renderFilms(container, filteredFilms.splice(0, TOP_FILMS_COUNT), false, false);
+  renderTopFilms(container, films, sortFilms);
+};
+
+
+/**
+ * Function for show most commented films
+ * @param {Node} container
+ * @param {Object[]} films
+ */
+export const showMostCommentedFilms = (container, films) => {
+  const sortFilms = (film1, film2) => film2.comments.length - film1.comments.length;
+
+  renderTopFilms(container, films, sortFilms);
 };
