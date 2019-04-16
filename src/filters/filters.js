@@ -35,28 +35,6 @@ const filterFilms = (films, filterName) => {
 };
 
 
-const getFilmsCount = (films, filterName) => {
-  let filmsCount = 0;
-
-  switch (filterName) {
-    case `all movies`:
-      filmsCount = films.length;
-      break;
-    case `watchlist`:
-      filmsCount = films.filter((film) => film.userInfo.isGoingToWatch).length;
-      break;
-    case `history`:
-      filmsCount = films.filter((film) => film.userInfo.isViewed).length;
-      break;
-    case `favorites`:
-      filmsCount = films.filter((film) => film.userInfo.isFavorite).length;
-      break;
-  }
-
-  return filmsCount;
-};
-
-
 /**
  * Function for update active filter
  * @param {Object} activeFilter
@@ -110,7 +88,7 @@ export const renderFilters = (container, filters, films) => {
     };
 
     fragment.appendChild(filterComponent.render());
-    filterComponent.setFilterCount(getFilmsCount(films, filterName));
+    filterComponent.setFilterCount(filterFilms(films, filterName).length);
   });
 
   container.appendChild(fragment);
