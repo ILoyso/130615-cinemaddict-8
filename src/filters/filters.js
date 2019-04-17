@@ -1,3 +1,4 @@
+import filtersData from './filters-data';
 import FilterView from './filter-view';
 import {hideStatistic, showStatistic} from '../statistic/statistic';
 import {HIDDEN_CLASS} from '../utils/utils';
@@ -5,6 +6,7 @@ import {showFilms} from '../films/films';
 
 const filmsWrapper = document.querySelector(`.films`);
 const filmsContainer = document.querySelector(`.films-list .films-list__container`);
+const filtersContainer = document.querySelector(`.main-navigation`);
 
 
 /**
@@ -55,17 +57,18 @@ const updateActiveFilter = (activeFilter, filters) => {
 
 /**
  * Function for render filters
- * @param {Node} container
- * @param {Object} filters
  * @param {Object[]} films
+ * @param {Object} filters [filters = filtersData]
+ * @param {Node} container [container = filtersContainer]
  */
-export const renderFilters = (container, filters, films) => {
+export const renderFilters = (films, filters = filtersData, container = filtersContainer) => {
   container.innerHTML = ``;
   const fragment = document.createDocumentFragment();
 
   filters.forEach((filter) => {
     const filterComponent = new FilterView(filter);
     const filterName = filterComponent.filterId;
+    const filteredFilms = filterFilms(films, filterName);
 
     filterComponent.onFilter = () => {
       filters = updateActiveFilter(filter, filters);
@@ -78,17 +81,14 @@ export const renderFilters = (container, filters, films) => {
       } else {
         filmsWrapper.classList.remove(HIDDEN_CLASS);
         hideStatistic();
-
-        const filteredFilms = filterFilms(films, filterName);
-
         showFilms(filmsContainer, filteredFilms);
       }
 
-      renderFilters(container, filters, films);
+      renderFilters(films);
     };
 
     fragment.appendChild(filterComponent.render());
-    filterComponent.setFilterCount(filterFilms(films, filterName).length);
+    filterComponent.setFilterCount(filteredFilms.length);
   });
 
   container.appendChild(fragment);

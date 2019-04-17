@@ -1,4 +1,3 @@
-import filtersData from './filters/filters-data';
 import API from './api';
 import Provider from './provider';
 import Store from './store';
@@ -11,7 +10,6 @@ const AUTHORIZATION = `Basic l76oy54048so9d00f863`;
 const END_POINT = `https://es8-demo-srv.appspot.com/moowle/`;
 const FILMS_STORE_KEY = `films-store-key`;
 
-const filtersContainer = document.querySelector(`.main-navigation`);
 const filmsContainer = document.querySelector(`.films-list .films-list__container`);
 const filmsTopContainers = document.querySelectorAll(`.films-list--extra .films-list__container`);
 const loadingContainer = document.querySelector(`.films-list__title`);
@@ -57,9 +55,9 @@ provider.getFilms()
     showFilms(filmsContainer, films);
     showTopFilms(filmsTopContainers[0], films);
     showMostCommentedFilms(filmsTopContainers[1], films);
-    renderFilters(filtersContainer, filtersData, films);
+    renderFilters(films);
     renderUserRank(rankContainer, films);
-    renderMaxMovieCount(maxMovieContainer, films)
+    renderMaxMovieCount(maxMovieContainer, films);
   })
   .catch(() => {
     showLoader(`Something went wrong while loading movies. Check your connection or try again later`);

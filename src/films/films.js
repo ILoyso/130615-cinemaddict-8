@@ -1,5 +1,6 @@
 import FilmView from './film-view';
 import FilmPopupView from './film-popup-view';
+import {renderFilters} from '../filters/filters';
 import {provider} from '../main';
 import {HIDDEN_CLASS, renderUserRank} from '../utils/utils';
 
@@ -32,6 +33,7 @@ const createFilm = (films, film, hasControls) => {
     provider.updateFilm({id: film.id, data: film.toRAW()})
       .then((newFilm) => {
         filmComponent.update(newFilm);
+        renderFilters(films);
       });
   };
 
@@ -41,6 +43,7 @@ const createFilm = (films, film, hasControls) => {
     provider.updateFilm({id: film.id, data: film.toRAW()})
       .then((newFilm) => {
         filmComponent.update(newFilm);
+        renderFilters(films);
       });
   };
 
@@ -51,6 +54,7 @@ const createFilm = (films, film, hasControls) => {
       .then((newFilm) => {
         filmComponent.update(newFilm);
         renderUserRank(rankContainer, films);
+        renderFilters(films);
       });
   };
 
@@ -106,6 +110,7 @@ const createFilm = (films, film, hasControls) => {
           filmComponent.update(newFilm);
           renderUserRank(rankContainer, films);
           showMostCommentedFilms(filmsTopContainers[1], films);
+          renderFilters(films);
           body.removeChild(filmPopupComponent.element);
           filmPopupComponent.unrender();
         })
