@@ -1,16 +1,5 @@
 const CACHE_NAME = `MOVIES_V1.0`;
 
-/**
- * Function for adding data to SW cache
- * @param {Event} evt
- * @param {Response} response
- */
-const addToCache = (evt, response) => {
-  caches.open(CACHE_NAME)
-    .then((cache) => cache.put(evt.request, response));
-};
-
-
 /** Listener for installing SW cache and add to them all html, styles, images and scripts */
 self.addEventListener(`install`, (evt) => {
   const openCache = caches.open(CACHE_NAME)
@@ -31,20 +20,14 @@ self.addEventListener(`install`, (evt) => {
 /** Listener for working with SW cache */
 self.addEventListener(`fetch`, (evt) => {
   evt.respondWith(
-    fetch(evt.request)
+    caches.match(evt.request)
       .then((response) => {
-        addToCache(evt, response.clone());
-
-        return response.clone();
+        console.log(`Find in cache`, {response});
+        return response ? response : fetch(evt.request);
       })
-      .catch(() => {
-        return caches.match(evt.request)
-          .then((response) => {
-            return response;
-          })
-          .catch((error) => {
-            throw error;
-          });
-      }),
+      .catch((err) => {
+        console.error({err});
+        throw err;
+      })
   );
 });
