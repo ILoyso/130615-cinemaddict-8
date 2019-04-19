@@ -1,9 +1,9 @@
-import {MAX_FILM_RATING, ENTER_KEY_CODE} from "./utils";
-import Component from "./component";
+import {MAX_FILM_RATING, KeyCodes, HIDDEN_CLASS} from '../utils/utils';
+import Component from '../utils/component';
 import moment from 'moment';
 
 /** Class representing a film popup */
-export default class FilmPopup extends Component {
+export default class FilmPopupView extends Component {
 
   /**
    * Create a popup
@@ -40,11 +40,14 @@ export default class FilmPopup extends Component {
     this._element = null;
     this._onClose = null;
     this._onComment = null;
+    this._onRemoveComment = null;
     this._onRatingClick = null;
     this._onCloseButtonClick = this._onCloseButtonClick.bind(this);
     this._onChangeEmoji = this._onChangeEmoji.bind(this);
     this._onAddComment = this._onAddComment.bind(this);
     this._onChangeRating = this._onChangeRating.bind(this);
+    this._onRemoveLastComment = this._onRemoveLastComment.bind(this);
+    this._onEscPress = this._onEscPress.bind(this);
   }
 
   /**
@@ -98,7 +101,7 @@ export default class FilmPopup extends Component {
   _onAddComment(evt) {
     this._element.querySelector(`.film-details__comment-input`).style.border = `1px solid #979797`;
 
-    if ((evt.ctrlKey || evt.metaKey) && (evt.keyCode === ENTER_KEY_CODE)) {
+    if ((evt.ctrlKey || evt.metaKey) && (evt.keyCode === KeyCodes.ENTER)) {
       evt.preventDefault();
       this.blockComments();
 
@@ -153,6 +156,27 @@ export default class FilmPopup extends Component {
   }
 
   /**
+   * Method for close popup if on Esc press
+   * @param {Event} evt
+   * @private
+   */
+  _onEscPress(evt) {
+    if (evt.keyCode === KeyCodes.ESC) {
+      this._onCloseButtonClick();
+    }
+  }
+
+  /**
+   * Method for remove last comment
+   * @private
+   */
+  _onRemoveLastComment() {
+    if (typeof this._onRemoveComment === `function`) {
+      this._onRemoveComment();
+    }
+  }
+
+  /**
    * Method for saving updated data
    * @param {FormData} formData
    * @return {Object}
@@ -169,7 +193,7 @@ export default class FilmPopup extends Component {
       comments: this._comments
     };
 
-    const filmPopupMapper = FilmPopup.createMapper(entry);
+    const filmPopupMapper = FilmPopupView.createMapper(entry);
 
     for (const pair of formData.entries()) {
       const [property, value] = pair;
@@ -203,6 +227,14 @@ export default class FilmPopup extends Component {
    */
   set onRatingClick(fn) {
     this._onRatingClick = fn;
+  }
+
+  /**
+   * Setter for function that will be work on remove last comment
+   * @param {Function} fn
+   */
+  set onRemoveComment(fn) {
+    this._onRemoveComment = fn;
   }
 
   /**
@@ -316,8 +348,8 @@ export default class FilmPopup extends Component {
     
         <section class="film-details__user-rating-wrap">
           <div class="film-details__user-rating-controls">
-            <span class="film-details__watched-status ${this._userInfo.isViewed ? `film-details__watched-status--active` : ``}">${this._userInfo.isViewed ? `Already watched` : `not watched`}</span>
-            <button class="film-details__watched-reset" type="button">undo</button>
+            <span class="film-details__watched-status"></span>
+            <button class="film-details__watched-reset visually-hidden" type="button">undo</button>
           </div>
     
           <div class="film-details__user-score">
@@ -342,6 +374,8 @@ export default class FilmPopup extends Component {
 
   /** Method for bing function to close button */
   bind() {
+    document.addEventListener(`keydown`, this._onEscPress);
+
     this._element.querySelector(`.film-details__close-btn`).addEventListener(`click`, this._onCloseButtonClick);
 
     this._element.querySelectorAll(`.film-details__emoji-item`).forEach((element) => {
@@ -349,6 +383,7 @@ export default class FilmPopup extends Component {
     });
 
     this._element.querySelector(`.film-details__comment-input`).addEventListener(`keydown`, this._onAddComment);
+    this._element.querySelector(`.film-details__watched-reset`).addEventListener(`click`, this._onRemoveLastComment);
 
     this._element.querySelectorAll(`.film-details__user-rating-input`).forEach((element) => {
       element.addEventListener(`click`, this._onChangeRating);
@@ -394,8 +429,15 @@ export default class FilmPopup extends Component {
     }, ANIMATION_TIMEOUT);
   }
 
+  /** Method for show/hide button for remove last comment */
+  toggleRemoveCommentButton() {
+    this._element.querySelector(`.film-details__watched-reset`).classList.toggle(HIDDEN_CLASS);
+  }
+
   /** Method for unbing function from close button */
   unbind() {
+    document.removeEventListener(`keydown`, this._onEscPress);
+
     this._element.querySelector(`.film-details__close-btn`).removeEventListener(`click`, this._onCloseButtonClick);
 
     this._element.querySelectorAll(`.film-details__emoji-item`).forEach((element) => {
@@ -403,6 +445,7 @@ export default class FilmPopup extends Component {
     });
 
     this._element.querySelector(`.film-details__comment-input`).removeEventListener(`keydown`, this._onAddComment);
+    this._element.querySelector(`.film-details__watched-reset`).removeEventListener(`click`, this._onRemoveLastComment);
 
     this._element.querySelectorAll(`.film-details__user-rating-input`).forEach((element) => {
       element.removeEventListener(`click`, this._onChangeRating);

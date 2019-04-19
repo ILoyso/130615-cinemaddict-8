@@ -1,5 +1,3 @@
-import {generateRandomNumber, Time} from "./utils";
-
 const Emoji = {
   sleeping: `😴`,
   grinning: `😀`,
@@ -36,7 +34,7 @@ export default class ModelFilm {
       isViewed: Boolean(data[`user_details`][`already_watched`]),
       isGoingToWatch: Boolean(data[`user_details`][`watchlist`]),
       rating: Math.round(data[`user_details`][`personal_rating`]),
-      date: Date.now() + generateRandomNumber(1, -Time.MONTH) * Time.DAY * Time.HOUR * Time.MINUTE * Time.SECOND
+      date: data[`user_details`][`watching_date`]
     };
     this.comments = data[`comments`].reduce((comments, comment) => {
       const emojiName = comment[`emotion`] === `neutral-face` ? `neutralFace` : comment[`emotion`];
@@ -65,7 +63,7 @@ export default class ModelFilm {
         'poster': `images/posters/${this.filmInfo.poster}.jpg`,
         'runtime': this.filmInfo.duration / 60000,
         'actors': this.filmInfo.actors,
-        'genres': [...this.filmInfo.genres.values()],
+        'genre': [...this.filmInfo.genres.values()],
         'age_rating': this.filmInfo.restrictions,
         'director': this.filmInfo.director,
         'writers': this.filmInfo.writers,

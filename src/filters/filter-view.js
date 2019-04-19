@@ -1,7 +1,8 @@
-import Component from "./component";
+import Component from '../utils/component';
+import {HIDDEN_CLASS} from '../utils/utils';
 
 /** Class representing a filter */
-export default class Filter extends Component {
+export default class FilterView extends Component {
 
   /**
    * Create filter
@@ -54,18 +55,24 @@ export default class Filter extends Component {
    * @return {string}
    */
   get template() {
-    const amountTemplate = `<span class="main-navigation__item-count">n</span>`;
-
     return `<a href="#${this._id}" class="main-navigation__item ${this._isActive ? `main-navigation__item--active` : ``} ${this._isAdditional ? `
   main-navigation__item--additional` : ``}">
 ${this._name}
-            ${this._isActive || this._isAdditional ? `` : amountTemplate}
-          </a>`;
+        <span class="main-navigation__item-count ${this._isActive || this._isAdditional ? HIDDEN_CLASS : ``}"></span>
+    </a>`;
   }
 
   /** Method for bing functions to filter */
   bind() {
     this._element.addEventListener(`click`, this._onFilterClick);
+  }
+
+  /**
+   * Method for setting films count
+   * @param {Number} count
+   */
+  setFilterCount(count) {
+    this._element.querySelector(`.main-navigation__item-count`).textContent = `${count}`;
   }
 
   /** Method for unbind functions from filter */

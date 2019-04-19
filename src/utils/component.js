@@ -1,4 +1,4 @@
-import {createElement} from "./utils";
+import {createElement} from './utils';
 
 /** Abstract class representing a component */
 export default class Component {

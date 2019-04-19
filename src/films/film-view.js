@@ -1,14 +1,17 @@
-import Component from "./component";
+import Component from '../utils/component';
 import moment from 'moment';
+import 'moment-duration-format';
+import {HIDDEN_CLASS} from '../utils/utils';
 
 /** Class representing a film */
-export default class Film extends Component {
+export default class FilmView extends Component {
 
   /**
    * Create c film
    * @param {Object} film
+   * @param {Boolean} hasControls
    */
-  constructor(film) {
+  constructor(film, hasControls = true) {
     super();
 
     this._id = film.id;
@@ -31,7 +34,7 @@ export default class Film extends Component {
     };
     this._comments = film.comments;
 
-    this._hasControls = true;
+    this._hasControls = hasControls;
     this._element = null;
     this._onComments = null;
     this._onWatchList = null;
@@ -59,7 +62,7 @@ export default class Film extends Component {
    * @private
    */
   _getControlsTemplate() {
-    return `<form class="film-card__controls">
+    return `<form class="film-card__controls ${this._hasControls ? `` : HIDDEN_CLASS}">
             <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" style="border: ${this._userInfo.isGoingToWatch ? `1px solid white` : `0 none`}"><!--Add to watchlist--> WL</button>
             <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" style="border: ${this._userInfo.isViewed ? `1px solid white` : `0 none`}"><!--Mark as watched-->WTCHD</button>
             <button class="film-card__controls-item button film-card__controls-item--favorite" style="border: ${this._userInfo.isFavorite ? `1px solid white` : `0 none`}"><!--Mark as favorite-->FAV</button>
@@ -166,13 +169,13 @@ export default class Film extends Component {
           <p class="film-card__rating">${this._filmInfo.rating}</p>
           <p class="film-card__info">
             <span class="film-card__year">${moment(this._filmInfo.premiere).format(`YYYY`)}</span>
-            <span class="film-card__duration">${moment.duration(this._filmInfo.duration).hours()}h&nbsp;${moment.duration(this._filmInfo.duration).minutes()}m </span>
+            <span class="film-card__duration">${moment.duration(this._filmInfo.duration).format(`h:mm`)}</span>
             <span class="film-card__genre">${Array.from(this._filmInfo.genres).join(`, `)}</span>
           </p>
           <img src="./images/posters/${this._filmInfo.poster}.jpg" alt="" class="film-card__poster">
           <p class="film-card__description">${this._filmInfo.description}</p>
           <button class="film-card__comments">${this._getCommentsTemplate()}</button>
-          ${this._hasControls ? this._getControlsTemplate() : ``}
+          ${this._getControlsTemplate()}
         </article>`;
   }
 
