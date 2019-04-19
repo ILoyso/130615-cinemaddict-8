@@ -51,161 +51,6 @@ export default class FilmPopupView extends Component {
   }
 
   /**
-   * Method for creating comments template
-   * @return {String}
-   * @private
-   */
-  _getCommentsTemplate() {
-    return this._comments.map((comment) => `<li class="film-details__comment">
-          <span class="film-details__comment-emoji">${comment.emoji}</span>
-          <div>
-            <p class="film-details__comment-text">${comment.text}</p>
-            <p class="film-details__comment-info">
-              <span class="film-details__comment-author">${comment.author}</span>
-              <span class="film-details__comment-day">${moment(comment.date).startOf(`min`).fromNow()}</span>
-            </p>
-          </div>
-        </li>`).join(``);
-  }
-
-  /**
-   * Method for creating genres template
-   * @return {String}
-   * @private
-   */
-  _getGenresTemplate() {
-    return Array.from(this._filmInfo.genres).map((genre) => `<span class="film-details__genre">${genre}</span>`).join(``);
-  }
-
-  /**
-   * Method for creating rating template
-   * @return {string}
-   * @private
-   */
-  _getUserRating() {
-    let ratingTemplate = ``;
-
-    for (let i = 1; i <= MAX_FILM_RATING; i++) {
-      ratingTemplate += `<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${i}" id="rating-${i}" ${this._userInfo.rating === i ? `checked` : ``}>
-                <label class="film-details__user-rating-label" for="rating-${i}">${i}</label>`;
-    }
-
-    return ratingTemplate;
-  }
-
-  /**
-   * Method for adding new comment
-   * @param {Event} evt
-   * @private
-   */
-  _onAddComment(evt) {
-    this._element.querySelector(`.film-details__comment-input`).style.border = `1px solid #979797`;
-
-    if ((evt.ctrlKey || evt.metaKey) && (evt.keyCode === KeyCodes.ENTER)) {
-      evt.preventDefault();
-      this.blockComments();
-
-      const newComment = {};
-      const textarea = this._element.querySelector(`.film-details__comment-input`);
-      newComment.text = textarea.value;
-      newComment.author = `Me`;
-      newComment.emoji = this._element.querySelector(`.film-details__emoji-item:checked + label`).textContent;
-      newComment.date = moment().valueOf();
-
-      if (typeof this._onComment === `function`) {
-        this._onComment(newComment);
-      }
-    }
-  }
-
-  /**
-   * Method for update emoji
-   * @private
-   */
-  _onChangeEmoji() {
-    const emoji = this._element.querySelector(`.film-details__emoji-item:checked + label`).textContent;
-    this._element.querySelector(`.film-details__add-emoji-label`).innerHTML = emoji;
-  }
-
-  /**
-   * Method for update user rating
-   * @private
-   */
-  _onChangeRating() {
-    this.blockRating();
-    const newRating = this._element.querySelector(`.film-details__user-rating-input:checked`).value;
-
-    if (typeof this._onRatingClick === `function`) {
-      this._onRatingClick(newRating);
-    }
-  }
-
-  /**
-   * Method for check for function and if yes to white it in this._onClose
-   * @private
-   */
-  _onCloseButtonClick() {
-    const formData = new FormData(this._element.querySelector(`.film-details__inner`));
-    const newData = this._processForm(formData);
-
-    if (typeof this._onClose === `function`) {
-      this._onClose(newData);
-    }
-
-    this.update(newData);
-  }
-
-  /**
-   * Method for close popup if on Esc press
-   * @param {Event} evt
-   * @private
-   */
-  _onEscPress(evt) {
-    if (evt.keyCode === KeyCodes.ESC) {
-      this._onCloseButtonClick();
-    }
-  }
-
-  /**
-   * Method for remove last comment
-   * @private
-   */
-  _onRemoveLastComment() {
-    if (typeof this._onRemoveComment === `function`) {
-      this._onRemoveComment();
-    }
-  }
-
-  /**
-   * Method for saving updated data
-   * @param {FormData} formData
-   * @return {Object}
-   * @private
-   */
-  _processForm(formData) {
-    const entry = {
-      userInfo: {
-        rating: this._userInfo.rating,
-        isFavorite: false,
-        isViewed: false,
-        isGoingToWatch: false,
-      },
-      comments: this._comments
-    };
-
-    const filmPopupMapper = FilmPopupView.createMapper(entry);
-
-    for (const pair of formData.entries()) {
-      const [property, value] = pair;
-      if (filmPopupMapper[property]) {
-        filmPopupMapper[property](value);
-      }
-    }
-
-    return entry;
-  }
-
-  /**
    * Setter for function that will be work on close button click
    * @param {Function} fn
    */
@@ -370,6 +215,161 @@ export default class FilmPopupView extends Component {
         </section>
       </form>
     </section>`;
+  }
+
+  /**
+   * Method for creating comments template
+   * @return {String}
+   * @private
+   */
+  _getCommentsTemplate() {
+    return this._comments.map((comment) => `<li class="film-details__comment">
+          <span class="film-details__comment-emoji">${comment.emoji}</span>
+          <div>
+            <p class="film-details__comment-text">${comment.text}</p>
+            <p class="film-details__comment-info">
+              <span class="film-details__comment-author">${comment.author}</span>
+              <span class="film-details__comment-day">${moment(comment.date).startOf(`min`).fromNow()}</span>
+            </p>
+          </div>
+        </li>`).join(``);
+  }
+
+  /**
+   * Method for creating genres template
+   * @return {String}
+   * @private
+   */
+  _getGenresTemplate() {
+    return Array.from(this._filmInfo.genres).map((genre) => `<span class="film-details__genre">${genre}</span>`).join(``);
+  }
+
+  /**
+   * Method for creating rating template
+   * @return {string}
+   * @private
+   */
+  _getUserRating() {
+    let ratingTemplate = ``;
+
+    for (let i = 1; i <= MAX_FILM_RATING; i++) {
+      ratingTemplate += `<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${i}" id="rating-${i}" ${this._userInfo.rating === i ? `checked` : ``}>
+                <label class="film-details__user-rating-label" for="rating-${i}">${i}</label>`;
+    }
+
+    return ratingTemplate;
+  }
+
+  /**
+   * Method for adding new comment
+   * @param {Event} evt
+   * @private
+   */
+  _onAddComment(evt) {
+    this._element.querySelector(`.film-details__comment-input`).style.border = `1px solid #979797`;
+
+    if ((evt.ctrlKey || evt.metaKey) && (evt.keyCode === KeyCodes.ENTER)) {
+      evt.preventDefault();
+      this.blockComments();
+
+      const newComment = {};
+      const textarea = this._element.querySelector(`.film-details__comment-input`);
+      newComment.text = textarea.value;
+      newComment.author = `Me`;
+      newComment.emoji = this._element.querySelector(`.film-details__emoji-item:checked + label`).textContent;
+      newComment.date = moment().valueOf();
+
+      if (typeof this._onComment === `function`) {
+        this._onComment(newComment);
+      }
+    }
+  }
+
+  /**
+   * Method for update emoji
+   * @private
+   */
+  _onChangeEmoji() {
+    const emoji = this._element.querySelector(`.film-details__emoji-item:checked + label`).textContent;
+    this._element.querySelector(`.film-details__add-emoji-label`).innerHTML = emoji;
+  }
+
+  /**
+   * Method for update user rating
+   * @private
+   */
+  _onChangeRating() {
+    this.blockRating();
+    const newRating = this._element.querySelector(`.film-details__user-rating-input:checked`).value;
+
+    if (typeof this._onRatingClick === `function`) {
+      this._onRatingClick(newRating);
+    }
+  }
+
+  /**
+   * Method for check for function and if yes to white it in this._onClose
+   * @private
+   */
+  _onCloseButtonClick() {
+    const formData = new FormData(this._element.querySelector(`.film-details__inner`));
+    const newData = this._processForm(formData);
+
+    if (typeof this._onClose === `function`) {
+      this._onClose(newData);
+    }
+
+    this.update(newData);
+  }
+
+  /**
+   * Method for close popup if on Esc press
+   * @param {Event} evt
+   * @private
+   */
+  _onEscPress(evt) {
+    if (evt.keyCode === KeyCodes.ESC) {
+      this._onCloseButtonClick();
+    }
+  }
+
+  /**
+   * Method for remove last comment
+   * @private
+   */
+  _onRemoveLastComment() {
+    if (typeof this._onRemoveComment === `function`) {
+      this._onRemoveComment();
+    }
+  }
+
+  /**
+   * Method for saving updated data
+   * @param {FormData} formData
+   * @return {Object}
+   * @private
+   */
+  _processForm(formData) {
+    const entry = {
+      userInfo: {
+        rating: this._userInfo.rating,
+        isFavorite: false,
+        isViewed: false,
+        isGoingToWatch: false,
+      },
+      comments: this._comments
+    };
+
+    const filmPopupMapper = FilmPopupView.createMapper(entry);
+
+    for (const pair of formData.entries()) {
+      const [property, value] = pair;
+      if (filmPopupMapper[property]) {
+        filmPopupMapper[property](value);
+      }
+    }
+
+    return entry;
   }
 
   /** Method for bing function to close button */

@@ -48,6 +48,58 @@ export default class FilmView extends Component {
   }
 
   /**
+   * Setter for function that will be work on 'Add to favorite' button
+   * @param {Function} fn
+   */
+  set onAddToFavorite(fn) {
+    this._onFavorite = fn;
+  }
+
+  /**
+   * Setter for function that will be work on 'Add to watch list' button
+   * @param {Function} fn
+   */
+  set onAddToWatchList(fn) {
+    this._onWatchList = fn;
+  }
+
+  /**
+   * Setter for function that will be work on Comments click
+   * @param {Function} fn
+   */
+  set onCommentsClick(fn) {
+    this._onComments = fn;
+  }
+
+  /**
+   * Setter for function that will be work on 'Add to watched' button
+   * @param {Function} fn
+   */
+  set onMarkAsWatched(fn) {
+    this._onWatched = fn;
+  }
+
+  /**
+   * Getter for film template
+   * @return {string}
+   */
+  get template() {
+    return `<article class="film-card ${this._hasControls ? `` : `film-card--no-controls`}">
+          <h3 class="film-card__title">${this._filmInfo.title ? this._filmInfo.title : this._filmInfo.originalTitle}</h3>
+          <p class="film-card__rating">${this._filmInfo.rating}</p>
+          <p class="film-card__info">
+            <span class="film-card__year">${moment(this._filmInfo.premiere).format(`YYYY`)}</span>
+            <span class="film-card__duration">${moment.duration(this._filmInfo.duration).format(`h:mm`)}</span>
+            <span class="film-card__genre">${Array.from(this._filmInfo.genres).join(`, `)}</span>
+          </p>
+          <img src="./images/posters/${this._filmInfo.poster}.jpg" alt="" class="film-card__poster">
+          <p class="film-card__description">${this._filmInfo.description}</p>
+          <button class="film-card__comments">${this._getCommentsTemplate()}</button>
+          ${this._getControlsTemplate()}
+        </article>`;
+  }
+
+  /**
    * Method for comments template
    * @return {string}
    * @private
@@ -125,58 +177,6 @@ export default class FilmView extends Component {
     this._element.querySelector(`.film-card__controls-item--add-to-watchlist`).style.border = this._userInfo.isGoingToWatch ? `1px solid white` : `0 none`;
     this._element.querySelector(`.film-card__controls-item--mark-as-watched`).style.border = this._userInfo.isViewed ? `1px solid white` : `0 none`;
     this._element.querySelector(`.film-card__controls-item--favorite`).style.border = this._userInfo.isFavorite ? `1px solid white` : `0 none`;
-  }
-
-  /**
-   * Setter for function that will be work on 'Add to favorite' button
-   * @param {Function} fn
-   */
-  set onAddToFavorite(fn) {
-    this._onFavorite = fn;
-  }
-
-  /**
-   * Setter for function that will be work on 'Add to watch list' button
-   * @param {Function} fn
-   */
-  set onAddToWatchList(fn) {
-    this._onWatchList = fn;
-  }
-
-  /**
-   * Setter for function that will be work on Comments click
-   * @param {Function} fn
-   */
-  set onCommentsClick(fn) {
-    this._onComments = fn;
-  }
-
-  /**
-   * Setter for function that will be work on 'Add to watched' button
-   * @param {Function} fn
-   */
-  set onMarkAsWatched(fn) {
-    this._onWatched = fn;
-  }
-
-  /**
-   * Getter for film template
-   * @return {string}
-   */
-  get template() {
-    return `<article class="film-card ${this._hasControls ? `` : `film-card--no-controls`}">
-          <h3 class="film-card__title">${this._filmInfo.title ? this._filmInfo.title : this._filmInfo.originalTitle}</h3>
-          <p class="film-card__rating">${this._filmInfo.rating}</p>
-          <p class="film-card__info">
-            <span class="film-card__year">${moment(this._filmInfo.premiere).format(`YYYY`)}</span>
-            <span class="film-card__duration">${moment.duration(this._filmInfo.duration).format(`h:mm`)}</span>
-            <span class="film-card__genre">${Array.from(this._filmInfo.genres).join(`, `)}</span>
-          </p>
-          <img src="./images/posters/${this._filmInfo.poster}.jpg" alt="" class="film-card__poster">
-          <p class="film-card__description">${this._filmInfo.description}</p>
-          <button class="film-card__comments">${this._getCommentsTemplate()}</button>
-          ${this._getControlsTemplate()}
-        </article>`;
   }
 
   /** Method for bing functions to task */

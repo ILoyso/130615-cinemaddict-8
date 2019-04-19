@@ -25,6 +25,15 @@ export default class Provider {
   }
 
   /**
+   * Method for check if internet connect or not
+   * @return {Boolean}
+   * @private
+   */
+  _isOnline() {
+    return window.navigator.onLine;
+  }
+
+  /**
    * Method for getting films from server or from localStorage (if offline)
    * @return {Promise}
    */
@@ -45,6 +54,14 @@ export default class Provider {
   }
 
   /**
+   * Method for sync data between server and localstorage
+   * @return {*|Promise<Response|never>}
+   */
+  syncFilms() {
+    return this._api.syncFilms(objectToArray(this._store.getAll()));
+  }
+
+  /**
    * Method for update film on server or on localStorage (if offline)
    * @return {Promise}
    */
@@ -61,22 +78,5 @@ export default class Provider {
       this._store.setItem({key: film.id, item: film});
       return Promise.resolve(ModelFilm.parseFilm(film));
     }
-  }
-
-  /**
-   * Method for sync data between server and localstorage
-   * @return {*|Promise<Response|never>}
-   */
-  syncFilms() {
-    return this._api.syncFilms(objectToArray(this._store.getAll()));
-  }
-
-  /**
-   * Method for check if internet connect or not
-   * @return {Boolean}
-   * @private
-   */
-  _isOnline() {
-    return window.navigator.onLine;
   }
 }

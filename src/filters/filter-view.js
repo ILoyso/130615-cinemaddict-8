@@ -22,19 +22,6 @@ export default class FilterView extends Component {
   }
 
   /**
-   * Method for check for function and if yes to white it in this._onFilter
-   * @param {Event} evt
-   * @private
-   */
-  _onFilterClick(evt) {
-    evt.preventDefault();
-
-    if (typeof this._onFilter === `function`) {
-      this._onFilter();
-    }
-  }
-
-  /**
    * Setter for filtering
    * @param {Function} fn
    */
@@ -60,6 +47,19 @@ export default class FilterView extends Component {
 ${this._name}
         <span class="main-navigation__item-count ${this._isActive || this._isAdditional ? HIDDEN_CLASS : ``}"></span>
     </a>`;
+  }
+
+  /**
+   * Method for check for function and if yes to white it in this._onFilter
+   * @param {Event} evt
+   * @private
+   */
+  _onFilterClick(evt) {
+    evt.preventDefault();
+
+    if (typeof this._onFilter === `function`) {
+      this._onFilter();
+    }
   }
 
   /** Method for bing functions to filter */

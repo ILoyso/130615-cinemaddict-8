@@ -49,6 +49,25 @@ export default class API {
   }
 
   /**
+   * Method for load data
+   * @param {String} url
+   * @param {String} method
+   * @param {Body} body
+   * @param {Headers} headers
+   * @return {Promise<Response>}
+   * @private
+   */
+  _load({url, method = Method.GET, body = null, headers = new Headers()}) {
+    headers.append(`Authorization`, this._authorization);
+
+    return fetch(`${this._endPoint}/${url}`, {method, body, headers})
+      .then(checkStatus)
+      .catch((err) => {
+        throw err;
+      });
+  }
+
+  /**
    * Method for getting films from server
    * @return {Promise<Response>}
    */
@@ -88,24 +107,5 @@ export default class API {
     })
       .then(toJSON)
       .then(ModelFilm.parseFilm);
-  }
-
-  /**
-   * Method for load data
-   * @param {String} url
-   * @param {String} method
-   * @param {Body} body
-   * @param {Headers} headers
-   * @return {Promise<Response>}
-   * @private
-   */
-  _load({url, method = Method.GET, body = null, headers = new Headers()}) {
-    headers.append(`Authorization`, this._authorization);
-
-    return fetch(`${this._endPoint}/${url}`, {method, body, headers})
-      .then(checkStatus)
-      .catch((err) => {
-        throw err;
-      });
   }
 }

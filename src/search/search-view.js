@@ -13,16 +13,6 @@ export default class SearchView extends Component {
   }
 
   /**
-   * Method for searching
-   * @private
-   */
-  _onInputSearch() {
-    if (typeof this._onSearch === `function`) {
-      this._onSearch();
-    }
-  }
-
-  /**
    * Setter for function that will be work on searching
    * @param {Function} fn
    */
@@ -47,6 +37,16 @@ export default class SearchView extends Component {
     <input type="text" name="search" class="search__field" placeholder="Search">
     <button type="submit" class="visually-hidden">Search</button>
   </form>`;
+  }
+
+  /**
+   * Method for searching
+   * @private
+   */
+  _onInputSearch() {
+    if (typeof this._onSearch === `function`) {
+      this._onSearch();
+    }
   }
 
   /** Method for bing functions to search */
