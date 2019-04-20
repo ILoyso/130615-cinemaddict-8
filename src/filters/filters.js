@@ -3,6 +3,7 @@ import FilterView from './filter-view';
 import {hideStatistic, showStatistic} from '../statistic/statistic';
 import {HIDDEN_CLASS} from '../utils/utils';
 import {showFilms} from '../films/films';
+import {clearSearch} from '../search/search';
 
 const filmsWrapper = document.querySelector(`.films`);
 const filmsContainer = document.querySelector(`.films-list .films-list__container`);
@@ -71,6 +72,7 @@ export const renderFilters = (films, filters = filtersData, container = filtersC
     const filteredFilms = filterFilms(films, filterName);
 
     filterComponent.onFilter = () => {
+      clearSearch();
       filters = updateActiveFilter(filter, filters);
       filter.isActive = true;
       filterComponent.update(filter);

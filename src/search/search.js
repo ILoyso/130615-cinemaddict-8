@@ -5,6 +5,7 @@ const header = document.querySelector(`.header`);
 const profileContainer = document.querySelector(`.header__profile`);
 const filmsContainer = document.querySelector(`.films-list .films-list__container`);
 
+let search;
 
 /**
  * Function for searching film by title
@@ -16,11 +17,18 @@ const searchFilm = (films, title) => films.filter((film) => film.filmInfo.title.
 
 
 /**
+ * Function for clear search field
+ * @return {*}
+ */
+export const clearSearch = () => search.clear();
+
+
+/**
  * Function for rendering search
  * @param {Object[]} films
  */
 export const renderSearch = (films) => {
-  const search = new SearchView();
+  search = new SearchView();
 
   search.onSearch = () => {
     const filteredFilms = searchFilm(films, search.input.value);

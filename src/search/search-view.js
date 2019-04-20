@@ -54,6 +54,11 @@ export default class SearchView extends Component {
     this._element.querySelector(`.search__field`).addEventListener(`keyup`, this._onInputSearch);
   }
 
+  /** Method for clear search field */
+  clear() {
+    this._element.querySelector(`.search__field`).value = ``;
+  }
+
   /** Method for unbind functions from search */
   unbind() {
     this._element.querySelector(`.search__field`).removeEventListener(`keyup`, this._onInputSearch);
