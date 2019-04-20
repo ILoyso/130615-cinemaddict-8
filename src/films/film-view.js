@@ -21,7 +21,6 @@ export default class FilmView extends Component {
       description: film.filmInfo.description,
       poster: film.filmInfo.poster,
       duration: film.filmInfo.duration,
-      genres: film.filmInfo.genres,
       premiere: film.filmInfo.premiere,
       rating: film.filmInfo.rating
     };
@@ -90,7 +89,6 @@ export default class FilmView extends Component {
           <p class="film-card__info">
             <span class="film-card__year">${moment(this._filmInfo.premiere).format(`YYYY`)}</span>
             <span class="film-card__duration">${moment.duration(this._filmInfo.duration).format(`h:mm`)}</span>
-            <span class="film-card__genre">${Array.from(this._filmInfo.genres).join(`, `)}</span>
           </p>
           <img src="./images/posters/${this._filmInfo.poster}.jpg" alt="" class="film-card__poster">
           <p class="film-card__description">${this._filmInfo.description}</p>
