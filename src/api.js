@@ -62,8 +62,8 @@ export default class API {
 
     return fetch(`${this._endPoint}/${url}`, {method, body, headers})
       .then(checkStatus)
-      .catch((err) => {
-        throw err;
+      .catch((error) => {
+        throw error;
       });
   }
 

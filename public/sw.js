@@ -25,9 +25,9 @@ self.addEventListener(`fetch`, (evt) => {
         console.log(`Find in cache`, {response});
         return response ? response : fetch(evt.request);
       })
-      .catch((err) => {
-        console.error({err});
-        throw err;
+      .catch((error) => {
+        console.error({error});
+        throw error;
       })
   );
 });

@@ -25,7 +25,7 @@ export default class Store {
 
     try {
       return JSON.parse(items);
-    } catch (e) {
+    } catch (error) {
       return emptyItems;
     }
   }
