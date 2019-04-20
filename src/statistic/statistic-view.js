@@ -5,6 +5,8 @@ import 'moment-duration-format';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
+const BAR_HEIGHT = 50;
+
 
 /** Class representing a statistic */
 export default class StatisticView extends Component {
@@ -129,7 +131,6 @@ export default class StatisticView extends Component {
   _generateCharts() {
     const [genreLabels, genreAmounts] = this._filterByGenre();
     const statisticWrapper = this._element.querySelector(`.statistic__chart`);
-    const BAR_HEIGHT = 50;
     statisticWrapper.height = BAR_HEIGHT * genreLabels.length;
 
     this._chart = new Chart(statisticWrapper, this._getChart());
