@@ -21,7 +21,7 @@ export default class StatisticView extends Component {
     this._filteringFilms = this._watchedFilms;
     this._chart = null;
 
-    this._filterByTime = this._filterByTime.bind(this);
+    this._filterByWatchingPeriod = this._filterByWatchingPeriod.bind(this);
   }
 
   /**
@@ -78,7 +78,7 @@ export default class StatisticView extends Component {
    * Method for filtering films by time
    * @private
    */
-  _filterByTime() {
+  _filterByWatchingPeriod() {
     const filter = this._element.querySelector(`.statistic__filters-input:checked`).value;
 
     switch (filter) {
@@ -249,7 +249,7 @@ export default class StatisticView extends Component {
   /** Method for bing functions to statistic */
   bind() {
     this._element.querySelectorAll(`.statistic__filters-input`).forEach((element) => {
-      element.addEventListener(`click`, this._filterByTime);
+      element.addEventListener(`click`, this._filterByWatchingPeriod);
     });
   }
 
@@ -267,7 +267,7 @@ export default class StatisticView extends Component {
   /** Method for unbind functions from statistic */
   unbind() {
     this._element.querySelectorAll(`.statistic__filters-input`).forEach((element) => {
-      element.removeEventListener(`click`, this._filterByTime);
+      element.removeEventListener(`click`, this._filterByWatchingPeriod);
     });
   }
 }
