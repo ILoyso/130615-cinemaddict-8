@@ -223,16 +223,21 @@ export default class FilmPopupView extends Component {
    * @private
    */
   _getCommentsTemplate() {
-    return this._comments.map((comment) => `<li class="film-details__comment">
+    return this._comments.map((comment) => {
+      const element = document.createElement(`div`);
+      element.textContent = comment.text;
+
+      return `<li class="film-details__comment">
           <span class="film-details__comment-emoji">${comment.emoji}</span>
           <div>
-            <p class="film-details__comment-text">${comment.text}</p>
+            <p class="film-details__comment-text">${element.textContent}</p>
             <p class="film-details__comment-info">
               <span class="film-details__comment-author">${comment.author}</span>
               <span class="film-details__comment-day">${moment(comment.date).startOf(`min`).fromNow()}</span>
             </p>
           </div>
-        </li>`).join(``);
+        </li>`;
+    }).join(``);
   }
 
   /**
