@@ -3,6 +3,8 @@ import moment from 'moment';
 import 'moment-duration-format';
 import {HIDDEN_CLASS} from '../utils/utils';
 
+const MAX_DESCRIPTION_LENGTH = 140;
+
 /** Class representing a film */
 export default class FilmView extends Component {
 
@@ -91,7 +93,7 @@ export default class FilmView extends Component {
             <span class="film-card__duration">${moment.duration(this._filmInfo.duration).format(`h:mm`)}</span>
           </p>
           <img src="./images/posters/${this._filmInfo.poster}.jpg" alt="" class="film-card__poster">
-          <p class="film-card__description">${this._filmInfo.description}</p>
+          <p class="film-card__description">${this._getDescriptionTemplate()}</p>
           <button class="film-card__comments">${this._getCommentsTemplate()}</button>
           ${this._getControlsTemplate()}
         </article>`;
@@ -117,6 +119,19 @@ export default class FilmView extends Component {
             <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" style="border: ${this._userInfo.isViewed ? `1px solid white` : `0 none`}"><!--Mark as watched-->WTCHD</button>
             <button class="film-card__controls-item button film-card__controls-item--favorite" style="border: ${this._userInfo.isFavorite ? `1px solid white` : `0 none`}"><!--Mark as favorite-->FAV</button>
           </form>`;
+  }
+
+  /**
+   * Method for description template
+   * @return {string}
+   * @private
+   */
+  _getDescriptionTemplate() {
+    if (this._filmInfo.description.length > MAX_DESCRIPTION_LENGTH) {
+      return `${this._filmInfo.description.substring(0, MAX_DESCRIPTION_LENGTH)}...`;
+    }
+
+    return `${this._filmInfo.description}`;
   }
 
   /**
