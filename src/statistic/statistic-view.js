@@ -108,7 +108,7 @@ export default class StatisticView extends Component {
    * @private
    */
   _filterByGenre() {
-    let filteredFilms = {};
+    const filteredFilms = {};
 
     this._filteringFilms.forEach((film) => {
       Array.from(film.filmInfo.genres).map((genre) => {
