@@ -55,6 +55,7 @@ const createFilm = (films, film, hasControls) => {
         filmComponent.update(newFilm);
         renderUserRank(rankContainer, films);
         renderFilters(films);
+        renderUserRank(rankContainer, films);
       });
   };
 
@@ -111,6 +112,7 @@ const createFilm = (films, film, hasControls) => {
           renderUserRank(rankContainer, films);
           showMostCommentedFilms(filmsTopContainers[1], films);
           renderFilters(films);
+          renderUserRank(rankContainer, films);
           body.removeChild(filmPopupComponent.element);
           filmPopupComponent.unrender();
         })
