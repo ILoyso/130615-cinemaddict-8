@@ -157,7 +157,7 @@ const checkShowMoreButton = (needButton) => {
     showMoreButton.classList.remove(HIDDEN_CLASS);
   } else {
     showMoreButton.classList.add(HIDDEN_CLASS);
-    showMoreButton.removeEventListener(`click`, showMoreFilms);
+    showMoreButton.removeEventListener(`click`, onShowMoreButtonClick);
   }
 };
 
@@ -167,7 +167,7 @@ const showFirstFilms = () => {
   let needButton = true;
   currentVisibleFilms = MAX_VISIBLE_FILMS;
 
-  showMoreButton.addEventListener(`click`, showMoreFilms);
+  showMoreButton.addEventListener(`click`, onShowMoreButtonClick);
 
   if (allFilmsData.length <= MAX_VISIBLE_FILMS) {
     currentVisibleFilms = allFilmsData.length;
@@ -180,7 +180,7 @@ const showFirstFilms = () => {
 
 
 /** Function for render parts of films */
-const showMoreFilms = () => {
+const onShowMoreButtonClick = () => {
   const filmsCount = allFilmsData.length;
   const currentFilmsCount = currentVisibleFilms;
   let needButton = true;
