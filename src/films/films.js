@@ -15,6 +15,7 @@ const showMoreButton = document.querySelector(`.films-list__show-more`);
 
 let currentVisibleFilms = 0;
 let allFilmsData = [];
+let currentFilmsData = [];
 
 
 /**
@@ -33,7 +34,7 @@ const createFilm = (films, film, hasControls) => {
     provider.updateFilm({id: film.id, data: film.toRAW()})
       .then((newFilm) => {
         filmComponent.update(newFilm);
-        renderFilters(films);
+        renderFilters(allFilmsData);
       });
   };
 
@@ -43,7 +44,7 @@ const createFilm = (films, film, hasControls) => {
     provider.updateFilm({id: film.id, data: film.toRAW()})
       .then((newFilm) => {
         filmComponent.update(newFilm);
-        renderFilters(films);
+        renderFilters(allFilmsData);
       });
   };
 
@@ -54,8 +55,7 @@ const createFilm = (films, film, hasControls) => {
       .then((newFilm) => {
         filmComponent.update(newFilm);
         renderUserRank(rankContainer, films);
-        renderFilters(films);
-        renderUserRank(rankContainer, films);
+        renderFilters(allFilmsData);
       });
   };
 
@@ -169,19 +169,19 @@ const showFirstFilms = () => {
 
   showMoreButton.addEventListener(`click`, onShowMoreButtonClick);
 
-  if (allFilmsData.length <= MAX_VISIBLE_FILMS) {
-    currentVisibleFilms = allFilmsData.length;
+  if (currentFilmsData.length <= MAX_VISIBLE_FILMS) {
+    currentVisibleFilms = currentFilmsData.length;
     needButton = false;
   }
 
-  renderFilmsToDom(filmsContainer, allFilmsData, true, currentVisibleFilms);
+  renderFilmsToDom(filmsContainer, currentFilmsData, true, currentVisibleFilms);
   checkShowMoreButton(needButton);
 };
 
 
 /** Function for render parts of films */
 const onShowMoreButtonClick = () => {
-  const filmsCount = allFilmsData.length;
+  const filmsCount = currentFilmsData.length;
   const currentFilmsCount = currentVisibleFilms;
   let needButton = true;
 
@@ -195,7 +195,7 @@ const onShowMoreButtonClick = () => {
     needButton = false;
   }
 
-  renderFilmsToDom(filmsContainer, allFilmsData, true, currentVisibleFilms, currentFilmsCount);
+  renderFilmsToDom(filmsContainer, currentFilmsData, true, currentVisibleFilms, currentFilmsCount);
   checkShowMoreButton(needButton);
 };
 
@@ -206,12 +206,18 @@ const onShowMoreButtonClick = () => {
  * @param {Object[]} films
  * @param {Boolean} allFilms [allFilms = true]
  * @param {Boolean} hasControls [hasControls = true]
+ * @param {Boolean} isFiltered [isFiltered = false]
  */
-export const showFilms = (container, films, allFilms = true, hasControls = true) => {
+export const showFilms = (container, films, allFilms = true, hasControls = true, isFiltered = false) => {
   container.innerHTML = ``;
 
-  if (allFilms) {
+  if (!isFiltered && allFilms) {
     allFilmsData = films;
+    currentFilmsData = films;
+  }
+
+  if (allFilms) {
+    currentFilmsData = films;
     showFirstFilms();
   } else {
     renderFilmsToDom(container, films, hasControls, films.length);

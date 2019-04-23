@@ -83,7 +83,7 @@ export const renderFilters = (films, filters = filtersData, container = filtersC
       } else {
         filmsWrapper.classList.remove(HIDDEN_CLASS);
         hideStatistic();
-        showFilms(filmsContainer, filteredFilms);
+        showFilms(filmsContainer, filteredFilms, true, true, true);
       }
 
       renderFilters(films);
