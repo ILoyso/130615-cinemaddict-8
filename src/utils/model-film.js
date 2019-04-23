@@ -57,7 +57,7 @@ export default class ModelFilm {
     return {
       'id': this.id,
       'film_info': {
-        'title:': this.filmInfo.title,
+        'title': this.filmInfo.title,
         'alternative_title': this.filmInfo.originalTitle,
         'description': this.filmInfo.description,
         'poster': `images/posters/${this.filmInfo.poster}.jpg`,
