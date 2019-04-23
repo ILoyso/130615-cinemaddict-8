@@ -8,8 +8,21 @@ self.addEventListener(`install`, (evt) => {
         `./`,
         `./index.html`,
         `./bundle.js`,
-        `./css/`,
-        `./images/`,
+        `./css/normalize.css`,
+        `./css/main.css`,
+        `./images/posters/accused.jpg`,
+        `./images/posters/blackmail.jpg`,
+        `./images/posters/blue-blazes.jpg`,
+        `./images/posters/fuga-da-new-york.jpg`,
+        `./images/posters/moonrise.jpg`,
+        `./images/posters/three-friends.jpg`,
+        `./images/background.png`,
+        `./images/icon-favorite.png`,
+        `./images/icon-favorite.svg`,
+        `./images/icon-watched.png`,
+        `./images/icon-watched.svg`,
+        `./images/icon-watchlist.png`,
+        `./images/icon-watchlist.svg`
       ]);
     });
 
