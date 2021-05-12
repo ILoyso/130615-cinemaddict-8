@@ -20,7 +20,7 @@
     "node": "10"
   },
   "dependencies": {
-    "chart.js": "2.8.0",
+    "chart.js": "2.9.4",
     "chartjs-plugin-datalabels": "0.6.0",
     "moment": "2.24.0",
     "moment-duration-format": "2.2.2"
